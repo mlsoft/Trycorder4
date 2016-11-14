@@ -15,9 +15,13 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
-/**
- * Created by mlsoft on 16-05-13.
- */
+/*
+*  By Martin Laberge (mlsoft), From March 2016 to november 2016.
+*  Licence: Can be shared with anyone, for non profit, provided my name stays in the comments.
+*  This is a conglomerate of examples codes found in differents public forums on internet.
+*  I just used the public knowledge to fit a special way to use an android phone functions.
+*/
+
 public class TrycorderActivity extends FragmentActivity implements
         TrycorderFragment.OnTrycorderInteractionListener,
         TrysensorFragment.OnTrysensorInteractionListener,

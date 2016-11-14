@@ -1,8 +1,10 @@
 package net.ddns.mlsoftlaberge.trycorder;
 
 /*
-*  By Martin Laberge, From March 2016 to July 2016.
+*  By Martin Laberge (mlsoft), From March 2016 to november 2016.
 *  Licence: Can be shared with anyone, for non profit, provided my name stays in the comments.
+*  This is a conglomerate of examples codes found in differents public forums on internet.
+*  I just used the public knowledge to fit a special way to use an android phone functions.
 */
 
 import android.app.Activity;
@@ -43,11 +45,14 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -254,6 +259,10 @@ public class TrycorderFragment extends Fragment
     private Button mTractorOffButton;
     private Button mTractorPushButton;
 
+    // the window for tractor control
+    private CheckBox mTractorRotateSwitch;
+    private SeekBar mTractorFreqButton;
+
     // the button to control the motors
     private Button mMotorButton;
     private Button mMotorImpulseButton;
@@ -296,7 +305,6 @@ public class TrycorderFragment extends Fragment
     private LinearLayout mSensorLayout;
 
     private LinearLayout mButtonsLayout;
-    private Animation mAnimation;
     private LinearLayout mButtonssensorLayout;
     private LinearLayout mButtonscommLayout;
     private LinearLayout mButtonsshieldLayout;
@@ -331,6 +339,9 @@ public class TrycorderFragment extends Fragment
 
     // the mode for the transp-seek buttons window
     private LinearLayout mTranspSeekWindow;
+
+    // the mode for the tractor-beam buttons window
+    private LinearLayout mTractorBeamWindow;
 
     // the mode animation for motor layout
     private FrameLayout mViewerAnimate;
@@ -871,6 +882,7 @@ public class TrycorderFragment extends Fragment
                 buttonsound();
                 switchbuttonlayout(6);
                 switchsensorlayout(9);
+                switchviewer(13);
             }
         });
 
@@ -901,6 +913,32 @@ public class TrycorderFragment extends Fragment
             public void onClick(View view) {
                 tractorpull();
                 sendcommand("tractor pull");
+            }
+        });
+
+        mTractorRotateSwitch = (CheckBox) view.findViewById(R.id.tractorrotate_switch);
+        mTractorRotateSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // do something, the isChecked will be
+                // true if the switch is in the On position
+                mTrbSensorView.setrotate(isChecked);
+            }
+        });
+
+        mTractorFreqButton = (SeekBar) view.findViewById(R.id.tractorfreq_button);
+        mTractorFreqButton.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progresValue, boolean fromUser) {
+                mTrbSensorView.setfreq(progresValue);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
 
@@ -1149,7 +1187,6 @@ public class TrycorderFragment extends Fragment
 
         // the buttons layout, to contain my buttons groups
         mButtonsLayout = (LinearLayout) view.findViewById(R.id.buttons_layout);
-        mAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.slidein);
 
         // the buttons group (one visible at a time)
         mButtonssensorLayout = (LinearLayout) view.findViewById(R.id.buttons_sensor_layout);
@@ -1197,6 +1234,8 @@ public class TrycorderFragment extends Fragment
         mFireControlWindow = (LinearLayout) view.findViewById(R.id.firecontrol_window);
 
         mTranspSeekWindow = (LinearLayout) view.findViewById(R.id.transpseek_window);
+
+        mTractorBeamWindow = (LinearLayout) view.findViewById(R.id.tractorbeam_window);
 
         mLogsSys = (TextView) view.findViewById(R.id.logs_sys);
         mLogsSys.setHorizontallyScrolling(true);
@@ -1898,20 +1937,14 @@ public class TrycorderFragment extends Fragment
             case 1:
                 say("Sensors Mode");
                 mButtonssensorLayout.setVisibility(View.VISIBLE);
-                //animation = AnimationUtils.loadAnimation(getContext(),R.anim.clockwise);
-                //mButtonssensorLayout.startAnimation(animation);
                 break;
             case 2:
                 say("Communication Mode");
                 mButtonscommLayout.setVisibility(View.VISIBLE);
-                //animation = AnimationUtils.loadAnimation(getContext(),R.anim.fadein);
-                //mButtonscommLayout.startAnimation(animation);
                 break;
             case 3:
                 say("Shield Mode");
                 mButtonsshieldLayout.setVisibility(View.VISIBLE);
-                //animation = AnimationUtils.loadAnimation(getContext(),R.anim.slidein);
-                //mButtonsshieldLayout.startAnimation(animation);
                 break;
             case 4:
                 say("Fire Mode");
@@ -2460,6 +2493,7 @@ public class TrycorderFragment extends Fragment
         mModeWindow.setVisibility(View.GONE);
         mTranspSeekWindow.setVisibility(View.GONE);
         mFireControlWindow.setVisibility(View.GONE);
+        mTractorBeamWindow.setVisibility(View.GONE);
         mLogsStat.stop();
         switchcam(0);
         switch (no) {
@@ -2556,6 +2590,11 @@ public class TrycorderFragment extends Fragment
             case 12:
                 say("Fire Control Window");
                 mFireControlWindow.setVisibility(View.VISIBLE);
+                mVieweron = false;
+                break;
+            case 13:
+                say("Tractor Beam Window");
+                mTractorBeamWindow.setVisibility(View.VISIBLE);
                 mVieweron = false;
                 break;
         }

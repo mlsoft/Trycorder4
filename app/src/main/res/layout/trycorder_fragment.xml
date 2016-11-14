@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -644,7 +646,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="17"
-                android:animateLayoutChanges="true"
                 android:background="@android:color/black"
                 android:orientation="vertical">
 
@@ -1186,7 +1187,6 @@
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_weight="8"
-                    android:animateLayoutChanges="true"
                     android:orientation="vertical">
 
                     <ImageView
@@ -1283,6 +1283,7 @@
 
                     </ScrollView>
 
+                    <!-- FIRE CONTROL WINDOW -->
 
                     <LinearLayout
                         android:id="@+id/firecontrol_window"
@@ -1336,6 +1337,7 @@
                             android:layout_marginRight="4dp"
                             android:background="@drawable/trekbutton_green"
                             android:max="100"
+                            style="@android:style/Widget.DeviceDefault.SeekBar"
                             android:thumb="@android:drawable/btn_default"
                             android:thumbTint="@android:color/holo_blue_dark" />
 
@@ -1429,6 +1431,7 @@
                             android:layout_marginRight="4dp"
                             android:background="@drawable/trekbutton_orange"
                             android:max="100"
+                            style="@android:style/Widget.DeviceDefault.SeekBar"
                             android:thumb="@android:drawable/btn_default"
                             android:thumbTint="@android:color/holo_red_dark" />
 
@@ -1480,6 +1483,8 @@
 
                     </LinearLayout>
 
+                    <!-- TRANSPORTER SEEK WINDOW -->
+
                     <LinearLayout
                         android:id="@+id/transpseek_window"
                         android:layout_width="match_parent"
@@ -1513,6 +1518,7 @@
                                 android:background="@drawable/trekbutton_yellow"
                                 android:max="255"
                                 android:thumb="@android:drawable/btn_default"
+                                style="@android:style/Widget.DeviceDefault.SeekBar"
                                 android:thumbTint="@android:color/holo_red_light" />
 
                             <net.ddns.mlsoftlaberge.trycorder.trycorder.VerticalSeekBar
@@ -1524,6 +1530,7 @@
                                 android:layout_weight="1"
                                 android:background="@drawable/trekbutton_yellow"
                                 android:max="255"
+                                style="@android:style/Widget.DeviceDefault.SeekBar"
                                 android:thumb="@android:drawable/btn_default"
                                 android:thumbTint="@android:color/holo_red_light" />
 
@@ -1536,6 +1543,7 @@
                                 android:layout_weight="1"
                                 android:background="@drawable/trekbutton_yellow"
                                 android:max="255"
+                                style="@android:style/Widget.DeviceDefault.SeekBar"
                                 android:thumb="@android:drawable/btn_default"
                                 android:thumbTint="@android:color/holo_red_light" />
 
@@ -1553,13 +1561,63 @@
 
                     </LinearLayout>
 
+                    <!-- TRACTOR BEAM WINDOW -->
+
+                    <LinearLayout
+                        android:id="@+id/tractorbeam_window"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:visibility="visible">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="4">
+
+                        </LinearLayout>
+
+                        <CheckBox
+                            android:id="@+id/tractorrotate_switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="Rotating Freq."
+                            android:checked="false"
+                            android:textColor="@android:color/holo_green_light" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Freq Control"
+                            android:textColor="@android:color/holo_green_light"
+                            android:textSize="18sp" />
+
+                        <SeekBar
+                            android:id="@+id/tractorfreq_button"
+                            android:layout_width="match_parent"
+                            android:layout_height="32dp"
+                            android:layout_marginLeft="4dp"
+                            android:layout_marginRight="4dp"
+                            android:background="@drawable/trekbutton_indigo"
+                            android:max="10"
+                            android:thumb="@android:drawable/btn_default"
+                            android:thumbTint="@android:color/holo_blue_bright"
+                            style="@android:style/Widget.DeviceDefault.SeekBar" />
+
+
+                    </LinearLayout>
+
+                    <!-- MODE MODE WINDOW -->
 
                     <LinearLayout
                         android:id="@+id/mode_window"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
-                        android:visibility="visible">
+                        android:visibility="gone">
 
                         <LinearLayout
                             android:layout_width="match_parent"

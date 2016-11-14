@@ -25,6 +25,8 @@ public class TrbSensorView extends TextView {
     private int mHeight;
 
     private int mode;   // 1=in 2=out
+    private int freq;   // slow or fast in freq/100
+    private boolean rotate;  // true if we need to rotate frequency
 
     private int position=0;
 
@@ -47,6 +49,14 @@ public class TrbSensorView extends TextView {
     public void setmode(int no) {
         mode=no;
         if(mode==0) stop();
+    }
+
+    public void setfreq(int no) {
+        freq = no;
+    }
+
+    public void setrotate(boolean rot) {
+        rotate=rot;
     }
 
     // ======= timer section =======
@@ -72,10 +82,12 @@ public class TrbSensorView extends TextView {
 
     private class MyTimer extends TimerTask {
         public void run() {
-            position+=3;
+            position+=(1+freq);
             postInvalidate();
             if(position>=100) {
                 position=1;
+                if(rotate) freq++;
+                if(freq>10) freq=0;
                 postInvalidate();
             }
         }
