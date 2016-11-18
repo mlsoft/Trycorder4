@@ -75,6 +75,7 @@ import net.ddns.mlsoftlaberge.trycorder.trycorder.ShiSensorView;
 import net.ddns.mlsoftlaberge.trycorder.trycorder.TemSensorView;
 import net.ddns.mlsoftlaberge.trycorder.trycorder.TraSensorView;
 import net.ddns.mlsoftlaberge.trycorder.trycorder.TrbSensorView;
+import net.ddns.mlsoftlaberge.trycorder.utils.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -233,6 +234,7 @@ public class TrycorderFragment extends Fragment
     // the button to fire at ennemys
     private Button mFireButton;
     private Button mPhaserButton;
+    private Button mRedalertButton;
     private Button mTorpedoButton;
 
     // the window with fire controls
@@ -262,6 +264,7 @@ public class TrycorderFragment extends Fragment
     // the window for tractor control
     private CheckBox mTractorRotateSwitch;
     private SeekBar mTractorFreqButton;
+    private SeekBar mTractorForceButton;
 
     // the button to control the motors
     private Button mMotorButton;
@@ -633,6 +636,7 @@ public class TrycorderFragment extends Fragment
                 buttonsound();
                 switchbuttonlayout(3);
                 switchsensorlayout(6);
+                switchviewer(13);
             }
         });
         // the shield up button
@@ -674,6 +678,16 @@ public class TrycorderFragment extends Fragment
             public void onClick(View view) {
                 firephaser();
                 sendcommand("phaser");
+            }
+        });
+
+        // the red alert button
+        mRedalertButton = (Button) view.findViewById(R.id.redalert_button);
+        mRedalertButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                redalert();
+                sendcommand("red alert");
             }
         });
 
@@ -916,13 +930,16 @@ public class TrycorderFragment extends Fragment
             }
         });
 
+        // ======= those 3 buttons are used by tractor and shield too =======
+
         mTractorRotateSwitch = (CheckBox) view.findViewById(R.id.tractorrotate_switch);
         mTractorRotateSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // do something, the isChecked will be
                 // true if the switch is in the On position
-                mTrbSensorView.setrotate(isChecked);
+                if(mButtonsmode==6) mTrbSensorView.setrotate(isChecked);
+                if(mButtonsmode==3) mShiSensorView.setrotate(isChecked);
             }
         });
 
@@ -930,7 +947,25 @@ public class TrycorderFragment extends Fragment
         mTractorFreqButton.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progresValue, boolean fromUser) {
-                mTrbSensorView.setfreq(progresValue);
+                if(mButtonsmode==6) mTrbSensorView.setfreq(progresValue);
+                if(mButtonsmode==3) mShiSensorView.setfreq(progresValue);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        mTractorForceButton = (SeekBar) view.findViewById(R.id.tractorforce_button);
+        mTractorForceButton.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progresValue, boolean fromUser) {
+                if(mButtonsmode==6) mTrbSensorView.setforce(progresValue);
+                if(mButtonsmode==3) mShiSensorView.setforce(progresValue);
             }
 
             @Override
@@ -1486,6 +1521,7 @@ public class TrycorderFragment extends Fragment
         mShieldDownButton.setTypeface(face3);
 
         mPhaserButton.setTypeface(face3);
+        mRedalertButton.setTypeface(face3);
         mTorpedoButton.setTypeface(face3);
 
         mTransportOutButton.setTypeface(face3);
@@ -1997,6 +2033,11 @@ public class TrycorderFragment extends Fragment
 
     private void buttonbad() {
         playsound(R.raw.denybeep1);
+    }
+
+    private void redalert() {
+        if (isChatty) speak("RED ALERT !");
+        playsound(R.raw.tng_red_alert1);
     }
 
     private void magneticsensor() {
@@ -2623,7 +2664,7 @@ public class TrycorderFragment extends Fragment
     public void onPictureTaken(byte[] data, Camera camera) {
         // Uri imageFileUri = getActivity().getContentResolver().insert(
         //         MediaStore.Images.Media.EXTERNAL_CONTENT_URI, new ContentValues());
-        File file = getOutputMediaFile(MEDIA_TYPE_IMAGE);
+        File file = FileUtils.getOutputMediaFile(FileUtils.MEDIA_TYPE_IMAGE);
         Uri imageFileUri = Uri.fromFile(file);
         try {
             OutputStream imageFileOS = getActivity().getContentResolver().openOutputStream(imageFileUri);
@@ -2702,56 +2743,6 @@ public class TrycorderFragment extends Fragment
         mViewerPhoto.setImageBitmap(bitmap565);
     }
 
-    // ===================================================================================
-    // common functions to obtain a media uri
-
-    public static final int MEDIA_TYPE_IMAGE = 1;
-    public static final int MEDIA_TYPE_VIDEO = 2;
-
-    /**
-     * Create a file Uri for saving an image or video
-     */
-    private static Uri getOutputMediaFileUri(int type) {
-        return Uri.fromFile(getOutputMediaFile(type));
-    }
-
-    /**
-     * Create a File for saving an image or video
-     */
-    private static File getOutputMediaFile(int type) {
-        // To be safe, you should check that the SDCard is mounted
-        // using Environment.getExternalStorageState() before doing this.
-
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DCIM), "Camera");
-        // This location works best if you want the created images to be shared
-        // between applications and persist after your app has been uninstalled.
-
-        // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                Log.d("Trycorder", "failed to create directory");
-                return null;
-            }
-        }
-
-        // Create a media file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        File mediaFile;
-        if (type == MEDIA_TYPE_IMAGE) {
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    "IMG_" + timeStamp + ".jpg");
-        } else if (type == MEDIA_TYPE_VIDEO) {
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    "VID_" + timeStamp + ".mp4");
-        } else {
-            return null;
-        }
-
-        return mediaFile;
-    }
-
-
     // ==========================================================================================
     // call camera and gallery application
 
@@ -2764,7 +2755,7 @@ public class TrycorderFragment extends Fragment
         switchviewer(5);
         // create Intent to take a picture and return control to the calling application
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);  // create a file to save the picture
+        fileUri = FileUtils.getOutputMediaFileUri(FileUtils.MEDIA_TYPE_IMAGE);  // create a file to save the picture
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
         // start the image capture Intent
         startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
@@ -2774,7 +2765,7 @@ public class TrycorderFragment extends Fragment
         say("Open Video application");
         //create new Intent
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        fileUri = getOutputMediaFileUri(MEDIA_TYPE_VIDEO);  // create a file to save the video
+        fileUri = FileUtils.getOutputMediaFileUri(FileUtils.MEDIA_TYPE_VIDEO);  // create a file to save the video
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);  // set the image file name
         intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1); // set the video image quality to high
         // start the Video Capture Intent
@@ -2913,6 +2904,11 @@ public class TrycorderFragment extends Fragment
             return (true);
         }
         // actions on the trycorder
+        if (texte.contains("alert")) {
+            switchbuttonlayout(4);
+            redalert();
+            return (true);
+        }
         if (texte.contains("sensor off")) {
             switchbuttonlayout(1);
             sensorsoff();

@@ -812,7 +812,7 @@
                     android:background="@android:color/black"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:weightSum="100">
 
                     <Button
@@ -822,9 +822,20 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="2dp"
                         android:layout_marginRight="2dp"
-                        android:layout_weight="50"
+                        android:layout_weight="33"
                         android:background="@drawable/trekbutton_red_left"
                         android:text="PHASER" />
+
+                    <Button
+                        android:id="@+id/redalert_button"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginRight="2dp"
+                        android:layout_weight="33"
+                        android:background="@drawable/trekbutton_red_center"
+                        android:text="Red Alert" />
 
                     <Button
                         android:id="@+id/torpedo_button"
@@ -833,7 +844,7 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="2dp"
                         android:layout_marginRight="2dp"
-                        android:layout_weight="50"
+                        android:layout_weight="33"
                         android:background="@drawable/trekbutton_red_right"
                         android:text="TORPEDO" />
 
@@ -847,7 +858,7 @@
                     android:background="@android:color/black"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     android:weightSum="100">
 
                     <Button
@@ -1562,6 +1573,7 @@
                     </LinearLayout>
 
                     <!-- TRACTOR BEAM WINDOW -->
+                    <!-- and SHIELD WINDOW -->
 
                     <LinearLayout
                         android:id="@+id/tractorbeam_window"
@@ -1607,6 +1619,25 @@
                             android:thumbTint="@android:color/holo_blue_bright"
                             style="@android:style/Widget.DeviceDefault.SeekBar" />
 
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Strength Control"
+                            android:textColor="@android:color/holo_green_light"
+                            android:textSize="18sp" />
+
+                        <SeekBar
+                            android:id="@+id/tractorforce_button"
+                            android:layout_width="match_parent"
+                            android:layout_height="32dp"
+                            android:layout_marginLeft="4dp"
+                            android:layout_marginRight="4dp"
+                            android:background="@drawable/trekbutton_orange"
+                            android:max="5"
+                            android:thumb="@android:drawable/btn_default"
+                            android:thumbTint="@android:color/holo_red_dark"
+                            style="@android:style/Widget.DeviceDefault.SeekBar" />
 
                     </LinearLayout>
 

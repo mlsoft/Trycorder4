@@ -16,6 +16,7 @@ import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
@@ -321,6 +322,7 @@ public class TrycorderService extends Service implements RecognitionListener {
 
     private boolean matchvoice(String textein) {
         String texte = textein.toLowerCase();
+        if (texte.contains("alert")) return(true);
         if (texte.contains("french") || texte.contains("français")) return(true);
         if (texte.contains("english") || texte.contains("anglais")) return(true);
         if (texte.contains("martin") || texte.contains("master")) return(true);
@@ -357,6 +359,17 @@ public class TrycorderService extends Service implements RecognitionListener {
         if (texte.contains("speak list")) return(true);
         return(false);
     }
+
+    private MediaPlayer soundmedia=null;
+
+    private void playsound(int resourceid) {
+        if(soundmedia!=null) {
+            soundmedia.release();
+        }
+        soundmedia = MediaPlayer.create(getBaseContext(), resourceid);
+        soundmedia.start(); // no need to call prepare(); create() does that for you
+    }
+
 
     // ===================================================================================
     // send a message to the other machines
@@ -554,7 +567,10 @@ public class TrycorderService extends Service implements RecognitionListener {
     }
 
     public void displaytext(String msg) {
-        informActivity("text",msg);
+        if(msg.contains("alert")) {
+            playsound(R.raw.tng_red_alert1);
+        }
+        informActivity("text", msg);
     }
 
 

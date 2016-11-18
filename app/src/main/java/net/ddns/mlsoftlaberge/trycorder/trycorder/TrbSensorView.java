@@ -26,6 +26,7 @@ public class TrbSensorView extends TextView {
 
     private int mode;   // 1=in 2=out
     private int freq;   // slow or fast in freq/100
+    private int force=0;    // force of the beam
     private boolean rotate;  // true if we need to rotate frequency
 
     private int position=0;
@@ -53,6 +54,11 @@ public class TrbSensorView extends TextView {
 
     public void setfreq(int no) {
         freq = no;
+    }
+
+    public void setforce(int no) {
+        force = no;
+        invalidate();
     }
 
     public void setrotate(boolean rot) {
@@ -116,6 +122,7 @@ public class TrbSensorView extends TextView {
                 // draw the shield effect
                 if(mode==1) mPaint2.setColor(Color.MAGENTA);
                 else mPaint2.setColor(Color.BLUE);
+                mPaint2.setStrokeWidth(1+force);
                 if(position!=0) {
                     // compute positions
                     float px=mWidth/2;

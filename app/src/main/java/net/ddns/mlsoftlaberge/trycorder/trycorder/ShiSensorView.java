@@ -25,7 +25,10 @@ public class ShiSensorView extends TextView {
     private int mWidth;
     private int mHeight;
 
-    private int mode;   // 1=in 2=out
+    private int mode=1;   // 1=in 2=out
+    private int freq=0;   // slow or fast in freq/100
+    private int force=0;    // force of the beam
+    private boolean rotate=false;  // true if we need to rotate frequency
 
     private int position=0;
 
@@ -54,6 +57,21 @@ public class ShiSensorView extends TextView {
         mode=no;
     }
 
+    public void setfreq(int no) {
+        freq = no;
+        invalidate();
+    }
+
+    public void setforce(int no) {
+        force = no;
+        invalidate();
+    }
+
+    public void setrotate(boolean rot) {
+        rotate=rot;
+    }
+
+
     // ======= timer section =======
     private Timer timer=null;
     private MyTimer myTimer;
@@ -78,9 +96,16 @@ public class ShiSensorView extends TextView {
             position+=3;
             postInvalidate();
             if(position>=250) {
-                cancel();
-                position=0;
-                postInvalidate();
+                if(rotate && mode==1) {
+                    position=200;
+                    freq++;
+                    if(freq>10) freq=0;
+                    postInvalidate();
+                } else {
+                    cancel();
+                    position = 0;
+                    postInvalidate();
+                }
             }
         }
     }
@@ -113,25 +138,28 @@ public class ShiSensorView extends TextView {
                         mPaint3.setAlpha(0);
                     }
                 } else {
-                    if(mode==1) {
+                    if (mode == 1) {
                         mPaint3.setAlpha(position);
                     } else {
-                        mPaint3.setAlpha(255-position);
+                        mPaint3.setAlpha(255 - position);
                     }
                 }
+                mPaint3.setStrokeWidth(1+force);
+
                 // draw the grid
-                for(int i=0;i<10;++i) {
-                    mCanvas.drawLine(0,mHeight/10*i,mWidth,mHeight/10*i,mPaint3);
-                    mCanvas.drawLine(mWidth/10*i,0,mWidth/10*i,mHeight,mPaint3);
+                int grid=10+freq;
+                for(int i=0;i<=grid;++i) {
+                    mCanvas.drawLine(0,mHeight/grid*i,mWidth,mHeight/grid*i,mPaint3);
+                    mCanvas.drawLine(mWidth/grid*i,0,mWidth/grid*i,mHeight,mPaint3);
                 }
                 // draw the circle effect
-                if(position!=0) {
-                    if (mode == 1) {
-                        mCanvas.drawCircle(mWidth / 2, mHeight / 2, position, mPaint2);
-                    } else {
-                        mCanvas.drawCircle(mWidth / 2, mHeight / 2, 250 - position, mPaint2);
-                    }
-                }
+                //if(position!=0) {
+                //    if (mode == 1) {
+                //        mCanvas.drawCircle(mWidth / 2, mHeight / 2, position, mPaint2);
+                //    } else {
+                //        mCanvas.drawCircle(mWidth / 2, mHeight / 2, 250 - position, mPaint2);
+                //    }
+                //}
                 // transfer the bitmap to the view
                 viewcanvas.drawBitmap(mBitmap, 0, 0, null);
             }

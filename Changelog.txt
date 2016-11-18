@@ -1,0 +1,5 @@
+2016-11-14: - version 4.1 new controls for the tractor-beam styles ajustments
+
+2016-11-12: - Version 4.0 of the Famous Trycorder By Martin Laberge.
+
+2016-11-12: - first commit
