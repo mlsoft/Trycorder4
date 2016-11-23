@@ -47,6 +47,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -226,6 +227,10 @@ public class TrycorderFragment extends Fragment
     private Button mInterCommButton;
     private int mCommStatus = 0;
 
+    private TextView mLogsCommand;
+    private Button mCommandButton;
+    private EditText mCommandText;
+
     // the button to control shields
     private Button mShieldButton;
     private Button mShieldUpButton;
@@ -234,6 +239,7 @@ public class TrycorderFragment extends Fragment
     // the button to fire at ennemys
     private Button mFireButton;
     private Button mPhaserButton;
+    private Button mYellowalertButton;
     private Button mRedalertButton;
     private Button mTorpedoButton;
 
@@ -299,6 +305,7 @@ public class TrycorderFragment extends Fragment
     private Button mModeClientButton;
     private Button mModeVisionNightButton;
     private Button mModeVisionDayButton;
+    private Button mModeDesktopButton;
 
     // the button to control sound-effects
     private Button mSoundButton;
@@ -336,6 +343,9 @@ public class TrycorderFragment extends Fragment
 
     // the mode for the mode-mode buttons window
     private LinearLayout mModeWindow;
+
+    // the window to enter manual control
+    private LinearLayout mCommandControlWindow;
 
     // the mode for the fire controls buttons window
     private LinearLayout mFireControlWindow;
@@ -594,6 +604,7 @@ public class TrycorderFragment extends Fragment
                     switchsensorlayout(12);
                 }
                 buttonsound();
+                switchviewer(14);
             }
         });
         // the open comm button
@@ -626,6 +637,21 @@ public class TrycorderFragment extends Fragment
                 sendcommand("intercom");
             }
         });
+
+        mLogsCommand = (TextView) view.findViewById(R.id.logs_command);
+
+        // the command button
+        mCommandButton = (Button) view.findViewById(R.id.command_button);
+        mCommandButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                buttonsound();
+                sendcommand(mCommandText.getText().toString());
+                mCommandText.setText("");
+            }
+        });
+
+        mCommandText = (EditText) view.findViewById(R.id.command_text);
 
         // ===================== shield buttons group ============================
         // the shield button
@@ -678,6 +704,16 @@ public class TrycorderFragment extends Fragment
             public void onClick(View view) {
                 firephaser();
                 sendcommand("phaser");
+            }
+        });
+
+        // the red alert button
+        mYellowalertButton = (Button) view.findViewById(R.id.yellowalert_button);
+        mYellowalertButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                yellowalert();
+                sendcommand("yellow alert");
             }
         });
 
@@ -1216,6 +1252,15 @@ public class TrycorderFragment extends Fragment
             }
         });
 
+        mModeDesktopButton = (Button) view.findViewById(R.id.mode_desktop_button);
+        mModeDesktopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                buttonsound();
+                switchtrycordermode(7);
+            }
+        });
+
         // ================== get handles on the 3 layout containers ===================
         // the sensor layout, to contain my sensorview
         mSensorLayout = (LinearLayout) view.findViewById(R.id.sensor_layout);
@@ -1265,6 +1310,8 @@ public class TrycorderFragment extends Fragment
         mViewerPhoto = (ImageView) view.findViewById(R.id.photo_view);
 
         mModeWindow = (LinearLayout) view.findViewById(R.id.mode_window);
+
+        mCommandControlWindow = (LinearLayout) view.findViewById(R.id.commandcontrol_window);
 
         mFireControlWindow = (LinearLayout) view.findViewById(R.id.firecontrol_window);
 
@@ -1521,6 +1568,7 @@ public class TrycorderFragment extends Fragment
         mShieldDownButton.setTypeface(face3);
 
         mPhaserButton.setTypeface(face3);
+        mYellowalertButton.setTypeface(face3);
         mRedalertButton.setTypeface(face3);
         mTorpedoButton.setTypeface(face3);
 
@@ -1557,6 +1605,7 @@ public class TrycorderFragment extends Fragment
         mModeClientButton.setTypeface(face2);
         mModeVisionNightButton.setTypeface(face2);
         mModeVisionDayButton.setTypeface(face2);
+        mModeDesktopButton.setTypeface(face2);
         // top mode buttons
         mModeCrewButton.setTypeface(face2);
         mModeInvButton.setTypeface(face2);
@@ -2033,6 +2082,11 @@ public class TrycorderFragment extends Fragment
 
     private void buttonbad() {
         playsound(R.raw.denybeep1);
+    }
+
+    private void yellowalert() {
+        if (isChatty) speak("Yellow ALERT !");
+        playsound(R.raw.alert15);
     }
 
     private void redalert() {
@@ -2534,6 +2588,7 @@ public class TrycorderFragment extends Fragment
         mModeWindow.setVisibility(View.GONE);
         mTranspSeekWindow.setVisibility(View.GONE);
         mFireControlWindow.setVisibility(View.GONE);
+        mCommandControlWindow.setVisibility(View.GONE);
         mTractorBeamWindow.setVisibility(View.GONE);
         mLogsStat.stop();
         switchcam(0);
@@ -2636,6 +2691,11 @@ public class TrycorderFragment extends Fragment
             case 13:
                 say("Tractor Beam Window");
                 mTractorBeamWindow.setVisibility(View.VISIBLE);
+                mVieweron = false;
+                break;
+            case 14:
+                say("Command Control Window");
+                mCommandControlWindow.setVisibility(View.VISIBLE);
                 mVieweron = false;
                 break;
         }
@@ -2865,7 +2925,7 @@ public class TrycorderFragment extends Fragment
         }
         say("Understood: " + text);
         sendtext(text);
-        if(autoListen) listen();
+        speak(text);
     }
 
     // ==============================================================================
@@ -2896,8 +2956,8 @@ public class TrycorderFragment extends Fragment
             return (true);
         }
         if (texte.contains("fuck") || texte.contains("shit")) {
-            if (speakLanguage.equals("FR")) speak("Ce n'est pas très poli");
-            else speak("This is not very polite.");
+            if (speakLanguage.equals("FR")) speak("Ne m'adressez pas la parole de cette façon");
+            else playsound(R.raw.donotaddressthisunitinthatmanner_clean);
             switchviewer(0);
             switchsensorlayout(0);
             switchbuttonlayout(0);
@@ -3102,7 +3162,8 @@ public class TrycorderFragment extends Fragment
         mTextstatus_top.setText(msg);
         say("Received: " + msg);
         if (matchvoice(msg) == false) {
-            speak(msg);
+            // the text is already spoken by the service, so dont repeat anymore
+            //speak(msg);
         }
     }
 
@@ -3111,6 +3172,7 @@ public class TrycorderFragment extends Fragment
 
     private void sendcommand(String text) {
         if(isMaster) {
+            saycommand(text);
             sendtext(text);
         }
     }
@@ -3120,6 +3182,16 @@ public class TrycorderFragment extends Fragment
         // start the client thread
         say("Send: " + text);
         mTrycorderService.sendtext(text);
+    }
+
+    // =========================================================================
+    // system log talker
+    private StringBuffer cmdbuffer = new StringBuffer(1000);
+
+    public void saycommand(String texte) {
+        cmdbuffer.insert(0, texte + "\n");
+        if(cmdbuffer.length()>1000) cmdbuffer.setLength(1000);
+        mLogsCommand.setText(cmdbuffer);
     }
 
 

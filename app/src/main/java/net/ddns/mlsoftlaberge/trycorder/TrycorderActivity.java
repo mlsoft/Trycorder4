@@ -28,6 +28,7 @@ public class TrycorderActivity extends FragmentActivity implements
         TryvisionFragment.OnTryvisionInteractionListener,
         TryviscamFragment.OnTryviscamInteractionListener,
         TryviewerFragment.OnTryviewerInteractionListener,
+        TrydesktopFragment.OnTrydesktopInteractionListener,
         TrygalleryFragment.OnTrygalleryInteractionListener {
 
     private static String TAG = "Trycorder";
@@ -38,6 +39,7 @@ public class TrycorderActivity extends FragmentActivity implements
     private TrysensorFragment mTrysensorFragment=null;
     private TryvisionFragment mTryvisionFragment=null;
     private TryviscamFragment mTryviscamFragment=null;
+    private TrydesktopFragment mTrydesktopFragment=null;
 
     private int currentMode=0;
 
@@ -71,16 +73,20 @@ public class TrycorderActivity extends FragmentActivity implements
             if (theEvent.equals("iplist")) {
                 // refresh the ip list
                 if(currentMode==1) mTrycorderFragment.askscanlist();
+                if(currentMode==7) mTrydesktopFragment.askscanlist();
             } else if (theEvent.equals("text")) {
                 // text received
                 if(currentMode==1) mTrycorderFragment.displaytext(theText);
+                if(currentMode==7) mTrydesktopFragment.displaytext(theText);
             } else if (theEvent.equals("say")) {
                 // text received
                 if(currentMode==1) mTrycorderFragment.say(theText);
+                if(currentMode==7) mTrydesktopFragment.say(theText);
             } else if (theEvent.equals("listen")) {
                 // text received
                 if(currentMode==1) mTrycorderFragment.understood(theText);
                 if(currentMode==4) mTrysensorFragment.understood(theText);
+                if(currentMode==7) mTrydesktopFragment.understood(theText);
             }
         }
     };
@@ -150,6 +156,11 @@ public class TrycorderActivity extends FragmentActivity implements
         switchfragment(mode);
     }
 
+    @Override
+    public void onTrydesktopModeChange(int mode) {
+        switchfragment(mode);
+    }
+
     private void switchfragment(int mode) {
         final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         switch(mode) {
@@ -187,6 +198,11 @@ public class TrycorderActivity extends FragmentActivity implements
                     ft.replace(android.R.id.content, mTryviscamFragment, TAG);
                     ft.commit();
                 }
+                break;
+            case 7:
+                if(mTrydesktopFragment==null) mTrydesktopFragment=new TrydesktopFragment();
+                ft.replace(android.R.id.content, mTrydesktopFragment, TAG);
+                ft.commit();
                 break;
         }
         currentMode=mode;

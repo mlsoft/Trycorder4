@@ -322,7 +322,8 @@ public class TrycorderService extends Service implements RecognitionListener {
 
     private boolean matchvoice(String textein) {
         String texte = textein.toLowerCase();
-        if (texte.contains("alert")) return(true);
+        if (texte.contains("red alert")) return(true);
+        if (texte.contains("yellow alert")) return(true);
         if (texte.contains("french") || texte.contains("français")) return(true);
         if (texte.contains("english") || texte.contains("anglais")) return(true);
         if (texte.contains("martin") || texte.contains("master")) return(true);
@@ -567,8 +568,14 @@ public class TrycorderService extends Service implements RecognitionListener {
     }
 
     public void displaytext(String msg) {
-        if(msg.contains("alert")) {
+        if(msg.contains("red alert")) {
             playsound(R.raw.tng_red_alert1);
+        }
+        if(msg.contains("yellow alert")) {
+            playsound(R.raw.alert15);
+        }
+        if(matchvoice(msg)==false) {
+            speak(msg);
         }
         informActivity("text", msg);
     }

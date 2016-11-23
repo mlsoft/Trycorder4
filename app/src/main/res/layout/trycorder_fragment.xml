@@ -822,9 +822,20 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="2dp"
                         android:layout_marginRight="2dp"
-                        android:layout_weight="33"
+                        android:layout_weight="25"
                         android:background="@drawable/trekbutton_red_left"
                         android:text="PHASER" />
+
+                    <Button
+                        android:id="@+id/yellowalert_button"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginRight="2dp"
+                        android:layout_weight="25"
+                        android:background="@drawable/trekbutton_yellow_center"
+                        android:text="Yellow Alert" />
 
                     <Button
                         android:id="@+id/redalert_button"
@@ -833,9 +844,9 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="2dp"
                         android:layout_marginRight="2dp"
-                        android:layout_weight="33"
-                        android:background="@drawable/trekbutton_red_center"
-                        android:text="Red Alert" />
+                        android:layout_weight="25"
+                        android:background="@drawable/trekbutton_pink_center"
+                        android:text="RED ALERT" />
 
                     <Button
                         android:id="@+id/torpedo_button"
@@ -844,7 +855,7 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="2dp"
                         android:layout_marginRight="2dp"
-                        android:layout_weight="33"
+                        android:layout_weight="25"
                         android:background="@drawable/trekbutton_red_right"
                         android:text="TORPEDO" />
 
@@ -1294,6 +1305,63 @@
 
                     </ScrollView>
 
+                    <!-- COMMAND CONTROL WINDOW -->
+
+                    <LinearLayout
+                        android:id="@+id/commandcontrol_window"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:visibility="visible"
+                        android:weightSum="10">
+
+                        <ScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="5"
+                            android:scrollIndicators="right">
+
+                            <TextView
+                                android:id="@+id/logs_command"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Command log\n------------------\n"
+                                android:textColor="@android:color/white"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                        </ScrollView>
+
+                        <Button
+                            android:id="@+id/command_button"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="2"
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="@dimen/button_margin"
+                            android:layout_marginEnd="@dimen/button_margin"
+                            android:layout_marginStart="@dimen/button_margin"
+                            android:layout_marginTop="@dimen/button_margin"
+                            android:focusable="true"
+                            android:background="@drawable/trekbutton_green"
+                            android:maxLines="1"
+                            android:text="Send Command"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <EditText
+                            android:id="@+id/command_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:gravity="top"
+                            android:imeOptions="actionDone"
+                            android:hint="Command"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
                     <!-- FIRE CONTROL WINDOW -->
 
                     <LinearLayout
@@ -1580,7 +1648,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
-                        android:visibility="visible">
+                        android:visibility="gone">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -1762,6 +1830,45 @@
                                 android:layout_weight="2"
                                 android:background="@drawable/trekbutton_green"
                                 android:text="Vision Cam2"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="4">
+
+                            <Button
+                                android:id="@+id/mode_desktop_button"
+                                android:layout_width="0dp"
+                                android:layout_height="48dp"
+                                android:layout_gravity="center"
+                                android:layout_marginBottom="@dimen/button_margin"
+                                android:layout_marginEnd="@dimen/button_margin"
+                                android:layout_marginStart="@dimen/button_margin"
+                                android:layout_marginTop="@dimen/button_margin"
+                                android:layout_weight="2"
+                                android:background="@drawable/trekbutton_indigo"
+                                android:maxLines="1"
+                                android:text="Desktop"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <Button
+                                android:id="@+id/mode_spare_button"
+                                android:layout_width="0dp"
+                                android:layout_height="48dp"
+                                android:layout_gravity="center"
+                                android:layout_marginBottom="@dimen/button_margin"
+                                android:layout_marginEnd="@dimen/button_margin"
+                                android:layout_marginStart="@dimen/button_margin"
+                                android:layout_marginTop="@dimen/button_margin"
+                                android:layout_weight="2"
+                                android:background="@drawable/trekbutton_indigo"
+                                android:text=""
                                 android:textSize="18sp"
                                 android:textStyle="bold" />
 
