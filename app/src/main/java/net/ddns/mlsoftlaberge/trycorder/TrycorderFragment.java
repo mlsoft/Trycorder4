@@ -379,6 +379,7 @@ public class TrycorderFragment extends Fragment
     private boolean replaySent;
     private boolean autoBoot;
     private boolean autoStop;
+    private boolean debugMode;
 
     // the preferences holder
     private SharedPreferences sharedPref;
@@ -402,6 +403,7 @@ public class TrycorderFragment extends Fragment
         replaySent = sharedPref.getBoolean("pref_key_replay_sent", false);
         autoBoot = sharedPref.getBoolean("pref_key_auto_boot", true);
         autoStop = sharedPref.getBoolean("pref_key_auto_stop", false);
+        debugMode = sharedPref.getBoolean("pref_key_debug_mode", false);
 
         // ==============================================================================
         // create layout params for the created views
@@ -1691,6 +1693,7 @@ public class TrycorderFragment extends Fragment
         replaySent = sharedPref.getBoolean("pref_key_replay_sent", false);
         autoBoot = sharedPref.getBoolean("pref_key_auto_boot", true);
         autoStop = sharedPref.getBoolean("pref_key_auto_stop", false);
+        debugMode = sharedPref.getBoolean("pref_key_debug_mode", false);
         // update device name for a device name from system
         if(deviceName.equals("Trycorder")) {
             deviceName=mFetcher.fetch_device_name();

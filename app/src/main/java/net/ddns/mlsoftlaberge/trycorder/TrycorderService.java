@@ -97,6 +97,7 @@ public class TrycorderService extends Service implements RecognitionListener {
     private String listenLanguage;
     private boolean autoBoot;
     private boolean autoStop;
+    private boolean debugMode;
 
     @Override
     public void onCreate() {
@@ -117,6 +118,7 @@ public class TrycorderService extends Service implements RecognitionListener {
         deviceName = sharedPref.getString("pref_key_device_name", "Trycorder");
         autoBoot = sharedPref.getBoolean("pref_key_auto_boot", true);
         autoStop = sharedPref.getBoolean("pref_key_auto_stop", false);
+        debugMode = sharedPref.getBoolean("pref_key_debug_mode", false);
         if(deviceName.equals("Trycorder")) {
             deviceName=mFetcher.fetch_device_name();
             SharedPreferences.Editor editor = sharedPref.edit();
@@ -322,6 +324,7 @@ public class TrycorderService extends Service implements RecognitionListener {
 
     private boolean matchvoice(String textein) {
         String texte = textein.toLowerCase();
+        if (texte.contains("server ok")) return(true);
         if (texte.contains("red alert")) return(true);
         if (texte.contains("yellow alert")) return(true);
         if (texte.contains("french") || texte.contains("français")) return(true);
@@ -396,9 +399,53 @@ public class TrycorderService extends Service implements RecognitionListener {
 
         @Override
         public void run() {
+            // send to all other trycorders
             if(mIpList.size()<2) return;
             for (int i = 1; i < mIpList.size(); ++i) {
                 clientsend(mIpList.get(i));
+            }
+            // send to the tryserver machine
+            if(debugMode) serversend("192.168.0.184");
+            else serversend("mlsoftlaberge.ddns.net");
+        }
+
+
+        private void serversend(String destip) {
+            // try to connect to a socket
+            try {
+                InetAddress serverAddr = InetAddress.getByName(destip);
+                clientSocket = new Socket(serverAddr, SERVERPORT);
+            } catch (Exception e) {
+
+            }
+            // try to send the message
+            try {
+                PrintWriter out = new PrintWriter(new BufferedWriter(
+                        new OutputStreamWriter(clientSocket.getOutputStream())), true);
+                out.println(mesg);
+            } catch (Exception e) {
+
+            }
+            // try to receive the answer
+            BufferedReader bufinput=null;
+            try {
+                bufinput = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            } catch (Exception e) {
+
+            }
+            try {
+                String read = bufinput.readLine();
+                if (read != null) {
+                    mHandler.post(new updateUIThread(read));
+                }
+            } catch (Exception e) {
+
+            }
+            // try to close the socket of the client
+            try {
+                clientSocket.close();
+            } catch (Exception e) {
+
             }
         }
 
@@ -568,6 +615,10 @@ public class TrycorderService extends Service implements RecognitionListener {
     }
 
     public void displaytext(String msg) {
+        if(msg.contains("server ok")) {
+            playsound(R.raw.computerbeep_39);
+            return;
+        }
         if(msg.contains("red alert")) {
             playsound(R.raw.tng_red_alert1);
         }

@@ -1342,7 +1342,6 @@
                             android:layout_marginEnd="@dimen/button_margin"
                             android:layout_marginStart="@dimen/button_margin"
                             android:layout_marginTop="@dimen/button_margin"
-                            android:focusable="true"
                             android:background="@drawable/trekbutton_green"
                             android:maxLines="1"
                             android:text="Send Command"
