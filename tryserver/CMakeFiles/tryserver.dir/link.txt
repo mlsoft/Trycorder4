@@ -1,0 +1,1 @@
+/usr/bin/c++   -pthread   CMakeFiles/tryserver.dir/main.cpp.o  -o tryserver -rdynamic 

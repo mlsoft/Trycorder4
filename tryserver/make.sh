@@ -1,3 +1,2 @@
-gcc -o tryserver -pthread tryserver.c
-gcc -o pthreadtest -pthread pthreadtest.c
+gcc -o tryserver -pthread tryserver.c && cp tryserver /home/bin/
 

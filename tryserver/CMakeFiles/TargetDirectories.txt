@@ -1,0 +1,7 @@
+/home/mlsoft/AndroidStudioProjects/Trycorder4/tryserver/CMakeFiles/install.dir
+/home/mlsoft/AndroidStudioProjects/Trycorder4/tryserver/CMakeFiles/list_install_components.dir
+/home/mlsoft/AndroidStudioProjects/Trycorder4/tryserver/CMakeFiles/rebuild_cache.dir
+/home/mlsoft/AndroidStudioProjects/Trycorder4/tryserver/CMakeFiles/tryserver.dir
+/home/mlsoft/AndroidStudioProjects/Trycorder4/tryserver/CMakeFiles/install/local.dir
+/home/mlsoft/AndroidStudioProjects/Trycorder4/tryserver/CMakeFiles/install/strip.dir
+/home/mlsoft/AndroidStudioProjects/Trycorder4/tryserver/CMakeFiles/edit_cache.dir

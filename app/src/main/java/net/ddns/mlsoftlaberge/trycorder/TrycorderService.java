@@ -128,6 +128,8 @@ public class TrycorderService extends Service implements RecognitionListener {
 
         initserver();
 
+        initstarship();
+
         inittalkserver();
 
         registerService();
@@ -153,6 +155,7 @@ public class TrycorderService extends Service implements RecognitionListener {
         stopdiscoverService();
         unregisterService();
         stoptalkserver();
+        stopstarship();
         stopserver();
         stopForeground(true);
         super.onDestroy();
@@ -381,15 +384,13 @@ public class TrycorderService extends Service implements RecognitionListener {
     public void sendtext(String text) {
         // start the client thread
         //say("Send: " + text);
-        clientThread = new Thread(new ClientThread(text));
+        Thread clientThread = new Thread(new ClientThread(text));
         clientThread.start();
     }
 
-    private Socket clientSocket = null;
-
-    private Thread clientThread = null;
-
     class ClientThread implements Runnable {
+
+        private Socket clientSocket = null;
 
         private String mesg;
 
@@ -400,9 +401,10 @@ public class TrycorderService extends Service implements RecognitionListener {
         @Override
         public void run() {
             // send to all other trycorders
-            if(mIpList.size()<2) return;
-            for (int i = 1; i < mIpList.size(); ++i) {
-                clientsend(mIpList.get(i));
+            if(mIpList.size()>=2) {
+                for (int i = 1; i < mIpList.size(); ++i) {
+                    clientsend(mIpList.get(i));
+                }
             }
             // send to the tryserver machine
             if(debugMode) serversend("192.168.0.184");
@@ -415,37 +417,36 @@ public class TrycorderService extends Service implements RecognitionListener {
             try {
                 InetAddress serverAddr = InetAddress.getByName(destip);
                 clientSocket = new Socket(serverAddr, SERVERPORT);
+                Log.d("clientthread", "server connected " + destip);
             } catch (Exception e) {
-
+                Log.d("clientthread", e.toString());
             }
             // try to send the message
             try {
                 PrintWriter out = new PrintWriter(new BufferedWriter(
                         new OutputStreamWriter(clientSocket.getOutputStream())), true);
                 out.println(mesg);
+                Log.d("clientthread", "data sent: " + mesg);
             } catch (Exception e) {
-
+                Log.d("clientthread", e.toString());
             }
             // try to receive the answer
-            BufferedReader bufinput=null;
             try {
-                bufinput = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            } catch (Exception e) {
-
-            }
-            try {
+                BufferedReader bufinput = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 String read = bufinput.readLine();
                 if (read != null) {
                     mHandler.post(new updateUIThread(read));
+                    Log.d("clientthread", "answer received: " + read);
                 }
             } catch (Exception e) {
-
+                Log.d("clientthread", e.toString());
             }
             // try to close the socket of the client
             try {
                 clientSocket.close();
+                Log.d("clientthread", "server closed " + destip);
             } catch (Exception e) {
-
+                Log.d("clientthread", e.toString());
             }
         }
 
@@ -469,7 +470,7 @@ public class TrycorderService extends Service implements RecognitionListener {
                 PrintWriter out = new PrintWriter(new BufferedWriter(
                         new OutputStreamWriter(clientSocket.getOutputStream())), true);
                 out.println(mesg);
-                Log.d("clientthread", "data sent");
+                Log.d("clientthread", "data sent: " + mesg);
             } catch (UnknownHostException e) {
                 Log.d("clientthread", e.toString());
                 e.printStackTrace();
@@ -488,6 +489,104 @@ public class TrycorderService extends Service implements RecognitionListener {
             } catch (Exception e) {
                 Log.d("clientthread", e.toString());
                 e.printStackTrace();
+            }
+        }
+
+    }
+
+    // ===================================================================================
+    // connect with the starship server, announce myself, and wait for orders
+
+    private Thread starshipThread=null;
+    private Socket starshipSocket=null;
+
+    public void initstarship() {
+        say("Initialize the starship network");
+        // start the starship thread
+        Thread starshipThread = new Thread(new StarshipThread());
+        starshipThread.start();
+    }
+
+    public void stopstarship() {
+        say("Stop the starship network");
+        // stop the server thread
+        try {
+            starshipThread.interrupt();
+        } catch (Exception e) {
+            Log.d("stopstarshipthread", e.toString());
+        }
+        // close the socket of the server
+        try {
+            starshipSocket.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    class StarshipThread implements Runnable {
+
+        String identification="trycorder";
+
+        public StarshipThread() {
+            identification="trycorder:"+mFetcher.fetch_device_name();
+        }
+
+        @Override
+        public void run() {
+            // send to the tryserver machine
+            if(debugMode) starshipsend("192.168.0.184");
+            else starshipsend("mlsoftlaberge.ddns.net");
+        }
+
+        private void starshipsend(String destip) {
+            while(!Thread.currentThread().isInterrupted()) {
+                // try to connect to a socket
+                try {
+                    InetAddress serverAddr = InetAddress.getByName(destip);
+                    starshipSocket = new Socket(serverAddr, SERVERPORT);
+                    Log.d("starshipthread", "server connected " + destip);
+                } catch (Exception e) {
+                    Log.d("starshipthread", e.toString());
+                }
+                // try to send the identification
+                try {
+                    PrintWriter out = new PrintWriter(new BufferedWriter(
+                            new OutputStreamWriter(starshipSocket.getOutputStream())), true);
+                    out.println(identification);
+                    Log.d("starshipthread", "data sent: " + identification);
+                } catch (Exception e) {
+                    Log.d("starshipthread", e.toString());
+                }
+                // prepare the input stream
+                BufferedReader bufinput = null;
+                try {
+                    bufinput = new BufferedReader(new InputStreamReader(starshipSocket.getInputStream()));
+                } catch (Exception e) {
+                    Log.d("starshipthread", e.toString());
+                }
+                // continue to receive all answers from the starship server until it dies
+                while (!Thread.currentThread().isInterrupted()) {
+                    // try to receive the answer
+                    try {
+                        String read = bufinput.readLine();
+                        if (read != null) {
+                            mHandler.post(new updateUIThread(read));
+                            Log.d("starshipthread", "answer received: " + read);
+                        }
+                    } catch (Exception e) {
+                        Log.d("starshipthread", e.toString());
+                        break;
+                    }
+                }
+                // try to close the socket of the client
+                try {
+                    starshipSocket.close();
+                    Log.d("starshipthread", "server closed " + destip);
+                } catch (Exception e) {
+                    Log.d("starshipthread", e.toString());
+                }
+
             }
         }
 
@@ -597,7 +696,7 @@ public class TrycorderService extends Service implements RecognitionListener {
 
     }
 
-    // tread to update the ui
+    // ===== thread used to update the ui of the running application with received text =====
     class updateUIThread implements Runnable {
         private String msg = null;
 

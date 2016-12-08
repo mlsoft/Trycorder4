@@ -171,12 +171,17 @@ public class TrycorderFragment extends Fragment
     private LinearLayout mWalkieLayout;
     private Button mWalkieSpeakButton;
     private Button mWalkieTalkButton;
-    private Button mWalkieScanButton;
+    private Button mWalkieCmdButton;
     private Button mWalkieSpeaklistButton;
     private Button mWalkieServeronButton;
     private Button mWalkieServeroffButton;
     private Button mWalkieLogslistButton;
     private TextView mWalkieIpList;
+
+    // the walkie layout on sensor screen
+    private LinearLayout mChatLayout;
+    private Button mChatSendButton;
+    private EditText mChatText;
 
     // the button to talk to computer
     private ImageButton mTalkButton;
@@ -225,6 +230,7 @@ public class TrycorderFragment extends Fragment
     private Button mOpenCommButton;
     private Button mCloseCommButton;
     private Button mInterCommButton;
+    private Button mChatCommButton;
     private int mCommStatus = 0;
 
     private TextView mLogsCommand;
@@ -605,8 +611,12 @@ public class TrycorderFragment extends Fragment
                 if (mCommStatus == 2) {
                     switchsensorlayout(12);
                 }
+                if (mCommStatus == 3) {
+                    switchsensorlayout(13);
+                }
                 buttonsound();
-                switchviewer(14);
+                //switchviewer(14); // command mode
+                switchviewer(2);    // logs mode
             }
         });
         // the open comm button
@@ -629,7 +639,7 @@ public class TrycorderFragment extends Fragment
                 sendcommand("hailing close");
             }
         });
-        // the close comm button
+        // the intercomm button
         mInterCommButton = (Button) view.findViewById(R.id.intercomm_button);
         mInterCommButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -639,6 +649,18 @@ public class TrycorderFragment extends Fragment
                 sendcommand("intercom");
             }
         });
+        // the chatcomm button
+        mChatCommButton = (Button) view.findViewById(R.id.chatcomm_button);
+        mChatCommButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mCommStatus = 3;
+                chatcomm();
+                sendcommand("chatcomm");
+            }
+        });
+
+        // ======== this is in the bottom view for command ==================
 
         mLogsCommand = (TextView) view.findViewById(R.id.logs_command);
 
@@ -1450,12 +1472,12 @@ public class TrycorderFragment extends Fragment
             }
         });
 
-        mWalkieScanButton = (Button) view.findViewById(R.id.walkie_scan_button);
-        mWalkieScanButton.setOnClickListener(new View.OnClickListener() {
+        mWalkieCmdButton = (Button) view.findViewById(R.id.walkie_cmd_button);
+        mWalkieCmdButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 buttonsound();
-                askscanlist();
+                switchviewer(14);
             }
         });
 
@@ -1510,8 +1532,20 @@ public class TrycorderFragment extends Fragment
         // fill the list with at least our private IP until some events fill it more
         mWalkieIpList.setText(mFetcher.fetch_ip_address());
 
-        // start the talk network listener server player (lol)
-        //startTrycorderService();
+        // position 13 of sensor layout
+        mChatLayout = (LinearLayout) view.findViewById(R.id.chat_layout);
+
+        mChatText = (EditText) view.findViewById(R.id.chat_text);
+
+        mChatSendButton = (Button) view.findViewById(R.id.chat_send_button);
+        mChatSendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                buttonsound();
+                sendcommand(mChatText.getText().toString());
+                mChatText.setText("");
+            }
+        });
 
         return view;
     }
@@ -1557,9 +1591,10 @@ public class TrycorderFragment extends Fragment
         mOpenCommButton.setTypeface(face3);
         mCloseCommButton.setTypeface(face3);
         mInterCommButton.setTypeface(face3);
+        mChatCommButton.setTypeface(face3);
         mWalkieSpeakButton.setTypeface(face2);
         mWalkieTalkButton.setTypeface(face2);
-        mWalkieScanButton.setTypeface(face2);
+        mWalkieCmdButton.setTypeface(face2);
         mWalkieSpeaklistButton.setTypeface(face2);
         mWalkieServeronButton.setTypeface(face2);
         mWalkieServeroffButton.setTypeface(face2);
@@ -1961,6 +1996,7 @@ public class TrycorderFragment extends Fragment
         mEarthStill.setVisibility(View.GONE);
         mStartrekLogo.setVisibility(View.GONE);
         mWalkieLayout.setVisibility(View.GONE);
+        mChatLayout.setVisibility(View.GONE);
         switch (no) {
             case 0:
                 mEarthStill.setVisibility(View.VISIBLE);
@@ -2000,6 +2036,9 @@ public class TrycorderFragment extends Fragment
                 break;
             case 12:
                 mWalkieLayout.setVisibility(View.VISIBLE);
+                break;
+            case 13:
+                mChatLayout.setVisibility(View.VISIBLE);
                 break;
         }
         if (no <= 4) mSensorpage = no;
@@ -2154,6 +2193,16 @@ public class TrycorderFragment extends Fragment
         stopsensors();
         switchsensorlayout(12);
         say("Intercom mode ready.");
+    }
+
+    private void chatcomm() {
+        if (isChatty) speak("Chatcomm mode ready");
+        else {
+            playsound(R.raw.keyok2);
+        }
+        stopsensors();
+        switchsensorlayout(13);
+        say("Chatcomm mode ready.");
     }
 
     private void transporterout() {
