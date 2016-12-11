@@ -2198,7 +2198,7 @@ public class TrycorderFragment extends Fragment
     private void chatcomm() {
         if (isChatty) speak("Chatcomm mode ready");
         else {
-            playsound(R.raw.keyok2);
+            playsound(R.raw.computerbeep_55);
         }
         stopsensors();
         switchsensorlayout(13);
@@ -3062,6 +3062,12 @@ public class TrycorderFragment extends Fragment
             switchbuttonlayout(2);
             switchsensorlayout(12);
             intercomm();
+            return (true);
+        }
+        if (texte.contains("chatcomm")) {
+            switchbuttonlayout(2);
+            switchsensorlayout(13);
+            chatcomm();
             return (true);
         }
         if (texte.contains("lower shield")) {

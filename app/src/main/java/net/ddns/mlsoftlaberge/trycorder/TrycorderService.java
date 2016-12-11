@@ -343,6 +343,7 @@ public class TrycorderService extends Service implements RecognitionListener {
         if (texte.contains("hailing") && texte.contains("close")) return(true);
         if (texte.contains("hailing") || texte.contains("frequency")) return(true);
         if (texte.contains("intercom")) return(true);
+        if (texte.contains("chatcomm")) return(true);
         if (texte.contains("shield") && texte.contains("down")) return(true);
         if (texte.contains("shield") || texte.contains("raise")) return(true);
         if (texte.contains("phaser")) return(true);

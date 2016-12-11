@@ -2008,3 +2008,414 @@ Send:192.168.0.119:fock
 
 Send:192.168.0.119:i fock the dog
 
+
+Connection accepted: Sock-12
+From:192.168.0.161
+RECV:Sock-12:trycorder:GT-S7560
+Responded:You are connected
+
+Connection accepted: Sock-13
+From:192.168.0.161
+RECV:Sock-13:chatcomm
+Responded:server ok
+Mirror:192.168.0.119:chatcomm
+Closed Socket: 192.168.0.161:Sock-13
+
+Connection accepted: Sock-14
+From:192.168.0.161
+RECV:Sock-14:fire
+Responded:server ok
+Mirror:192.168.0.119:fire
+Closed Socket: 192.168.0.161:Sock-14
+
+Connection accepted: Sock-15
+From:192.168.0.161
+RECV:Sock-15:fire
+Responded:server ok
+Mirror:192.168.0.119:fire
+Closed Socket: 192.168.0.161:Sock-15
+
+Connection accepted: Sock-16
+From:192.168.0.161
+RECV:Sock-16:fire
+Responded:server ok
+Mirror:192.168.0.119:fire
+Closed Socket: 192.168.0.161:Sock-16
+
+Connection accepted: Sock-17
+From:192.168.0.161
+RECV:Sock-17:beam me down
+Responded:server ok
+Mirror:192.168.0.119:beam me down
+Closed Socket: 192.168.0.161:Sock-17
+
+Connection accepted: Sock-5
+From:192.168.0.161
+RECV:Sock-5:trycorder:GT-S7560
+Responded:You are connected
+
+Connection accepted: Sock-6
+From:192.168.0.119
+RECV:Sock-6:trycorder:Galaxy Nexus
+Responded:You are connected
+
+Connection accepted: Sock-7
+From:192.168.0.119
+RECV:Sock-7:chatcomm
+Responded:server ok
+Mirror:192.168.0.161:chatcomm
+Closed Socket: 192.168.0.119:Sock-7
+
+Connection accepted: Sock-8
+From:192.168.0.161
+RECV:Sock-8:chatcomm
+Responded:server ok
+Mirror:192.168.0.119:chatcomm
+Closed Socket: 192.168.0.161:Sock-8
+
+Connection accepted: Sock-5
+From:192.168.0.119
+RECV:Sock-5:trycorder:Galaxy Nexus
+Responded:You are connected
+
+Connection accepted: Sock-6
+From:192.168.0.161
+RECV:Sock-6:trycorder:GT-S7560
+Responded:You are connected
+Send:192.168.0.119:test
+
+Send:192.168.0.161:test
+
+Send:192.168.0.119:test
+
+Send:192.168.0.161:test
+
+
+Connection accepted: Sock-7
+From:192.168.0.119
+RECV:Sock-7:hailing close
+Responded:server ok
+Mirror:192.168.0.161:hailing close
+Closed Socket: 192.168.0.119:Sock-7
+Send:192.168.0.119:
+
+Send:192.168.0.161:
+
+Send:192.168.0.119:test
+
+Send:192.168.0.161:test
+
+Closed Socket: 192.168.0.161:Sock-6
+
+Connection accepted: Sock-8
+From:192.168.0.161
+RECV:Sock-8:trycorder:GT-S7560
+Responded:You are connected
+
+Connection accepted: Sock-9
+From:192.168.0.161
+RECV:Sock-9:trycorder:GT-S7560
+Responded:You are connected
+
+Connection accepted: Sock-10
+From:192.168.0.161
+RECV:Sock-10:intercom
+Responded:server ok
+Mirror:192.168.0.119:intercom
+Closed Socket: 192.168.0.161:Sock-10
+Closed Socket: 192.168.0.161:Sock-9
+
+Connection accepted: Sock-11
+From:192.168.0.161
+RECV:Sock-11:trycorder:GT-S7560
+Responded:You are connected
+
+Connection accepted: Sock-12
+From:192.168.0.161
+RECV:Sock-12:trycorder:GT-S7560
+Responded:You are connected
+Send:192.168.0.119:test
+
+Send:192.168.0.161:test
+
+Send:192.168.0.161:test
+
+Send:192.168.0.161:test
+
+Send:192.168.0.119:ok
+
+Send:192.168.0.161:ok
+
+Send:192.168.0.161:ok
+
+Send:192.168.0.161:ok
+
+Send:192.168.0.119:test
+
+Send:192.168.0.161:test
+
+Send:192.168.0.161:test
+
+Send:192.168.0.161:test
+
+Closed Socket: 192.168.0.161:Sock-11
+Closed Socket: 192.168.0.161:Sock-8
+Closed Socket: 192.168.0.161:Sock-12
+
+Connection accepted: Sock-13
+From:192.168.0.161
+RECV:Sock-13:trycorder:GT-S7560
+Responded:You are connected
+
+Connection accepted: Sock-14
+From:192.168.0.161
+RECV:Sock-14:chatcomm
+Responded:server ok
+Mirror:192.168.0.119:chatcomm
+Closed Socket: 192.168.0.161:Sock-14
+
+Connection accepted: Sock-15
+From:192.168.0.119
+RECV:Sock-15:intercom
+Responded:server ok
+Mirror:192.168.0.161:intercom
+Closed Socket: 192.168.0.119:Sock-15
+
+Connection accepted: Sock-16
+From:192.168.0.119
+RECV:Sock-16:fire
+Responded:server ok
+Mirror:192.168.0.161:fire
+Closed Socket: 192.168.0.119:Sock-16
+
+Connection accepted: Sock-17
+From:192.168.0.119
+RECV:Sock-17:phaser
+Responded:server ok
+Mirror:192.168.0.161:phaser
+Closed Socket: 192.168.0.119:Sock-17
+
+Connection accepted: Sock-18
+From:192.168.0.119
+RECV:Sock-18:phaser
+Responded:server ok
+Mirror:192.168.0.161:phaser
+Closed Socket: 192.168.0.119:Sock-18
+
+Connection accepted: Sock-19
+From:192.168.0.119
+RECV:Sock-19:phaser
+Responded:server ok
+Mirror:192.168.0.161:phaser
+Closed Socket: 192.168.0.119:Sock-19
+
+Connection accepted: Sock-20
+From:192.168.0.119
+RECV:Sock-20:magnetic
+Responded:server ok
+Mirror:192.168.0.161:magnetic
+Closed Socket: 192.168.0.119:Sock-20
+
+Connection accepted: Sock-21
+From:192.168.0.119
+RECV:Sock-21:orientation
+Responded:server ok
+Mirror:192.168.0.161:orientation
+Closed Socket: 192.168.0.119:Sock-21
+
+Connection accepted: Sock-22
+From:192.168.0.119
+RECV:Sock-22:orientation
+Responded:server ok
+Mirror:192.168.0.161:orientation
+Closed Socket: 192.168.0.119:Sock-22
+
+Connection accepted: Sock-23
+From:192.168.0.119
+RECV:Sock-23:tractor pull
+Responded:server ok
+Mirror:192.168.0.161:tractor pull
+Closed Socket: 192.168.0.119:Sock-23
+
+Connection accepted: Sock-24
+From:192.168.0.119
+RECV:Sock-24:tractor off
+Responded:server ok
+Mirror:192.168.0.161:tractor off
+Closed Socket: 192.168.0.119:Sock-24
+
+Connection accepted: Sock-25
+From:192.168.0.119
+RECV:Sock-25:chatcomm
+Responded:server ok
+Mirror:192.168.0.161:chatcomm
+Closed Socket: 192.168.0.119:Sock-25
+
+Connection accepted: Sock-26
+From:192.168.0.119
+RECV:Sock-26:test
+Responded:server ok
+Mirror:192.168.0.161:test
+Closed Socket: 192.168.0.119:Sock-26
+
+Connection accepted: Sock-27
+From:192.168.0.119
+RECV:Sock-27:intercom
+Responded:server ok
+Mirror:192.168.0.161:intercom
+Closed Socket: 192.168.0.119:Sock-27
+Closed Socket: 192.168.0.119:Sock-5
+
+Connection accepted: Sock-28
+From:192.168.0.119
+RECV:Sock-28:trycorder:Galaxy Nexus
+Responded:You are connected
+
+Connection accepted: Sock-29
+From:192.168.0.119
+RECV:Sock-29:trycorder:Galaxy Nexus
+Responded:You are connected
+
+Connection accepted: Sock-30
+From:192.168.0.161
+RECV:Sock-30:trycorder:GT-S7560
+Responded:You are connected
+
+Connection accepted: Sock-31
+From:192.168.0.161
+RECV:Sock-31:trycorder:GT-S7560
+Responded:You are connected
+
+Connection accepted: Sock-32
+From:192.168.0.161
+RECV:Sock-32:trycorder:GT-S7560
+Responded:You are connected
+
+Connection accepted: Sock-33
+From:192.168.0.161
+RECV:Sock-33:trycorder:GT-S7560
+Responded:You are connected
+
+Connection accepted: Sock-34
+From:192.168.0.161
+RECV:Sock-34:trycorder:GT-S7560
+Responded:You are connected
+
+Connection accepted: Sock-35
+From:192.168.0.161
+RECV:Sock-35:trycorder:GT-S7560
+Responded:You are connected
+
+Connection accepted: Sock-36
+From:192.168.0.119
+RECV:Sock-36:intercom
+Responded:server ok
+Mirror:192.168.0.161:intercom
+Mirror:192.168.0.161:intercom
+
+Mirror:192.168.0.161:intercom
+
+
+Mirror:192.168.0.161:intercom
+
+
+
+Mirror:192.168.0.161:intercom
+
+
+
+
+Mirror:192.168.0.161:intercom
+
+
+
+
+
+Mirror:192.168.0.161:intercom
+
+
+
+
+
+
+Closed Socket: 192.168.0.119:Sock-36
+Closed Socket: 192.168.0.161:Sock-30
+Closed Socket: 192.168.0.161:Sock-31
+Closed Socket: 192.168.0.161:Sock-32
+Closed Socket: 192.168.0.161:Sock-33
+Closed Socket: 192.168.0.161:Sock-13
+Closed Socket: 192.168.0.161:Sock-34
+Send:192.168.0.119:
+
+Send:192.168.0.119:
+
+Send:192.168.0.161:
+
+Closed Socket: 192.168.0.119:Sock-28
+
+Connection accepted: Sock-37
+From:192.168.0.161
+RECV:Sock-37:trycorder:GT-S7560
+Responded:You are connected
+
+Connection accepted: Sock-38
+From:192.168.0.161
+RECV:Sock-38:trycorder:GT-S7560
+Responded:You are connected
+
+Connection accepted: Sock-39
+From:192.168.0.161
+RECV:Sock-39:trycorder:GT-S7560
+Responded:You are connected
+Closed Socket: 192.168.0.161:Sock-39
+
+Connection accepted: Sock-40
+From:192.168.0.161
+RECV:Sock-40:trycorder:GT-S7560
+Responded:You are connected
+
+Connection accepted: Sock-41
+From:192.168.0.161
+RECV:Sock-41:trycorder:GT-S7560
+Responded:You are connected
+Closed Socket: 192.168.0.161:Sock-40
+Closed Socket: 192.168.0.161:Sock-41
+Send:192.168.0.119:
+
+Send:192.168.0.161:
+
+Send:192.168.0.161:
+
+Send:192.168.0.161:
+
+Closed Socket: 192.168.0.161:Sock-37
+Closed Socket: 192.168.0.161:Sock-35
+Closed Socket: 192.168.0.161:Sock-38
+Closed Socket: 192.168.0.119:Sock-29
+
+Connection accepted: Sock-42
+From:192.168.0.119
+RECV:Sock-42:trycorder:Galaxy Nexus
+Responded:You are connected
+
+Connection accepted: Sock-43
+From:192.168.0.119
+RECV:Sock-43:chatcomm
+Responded:server ok
+Closed Socket: 192.168.0.119:Sock-43
+
+Connection accepted: Sock-44
+From:192.168.0.119
+RECV:Sock-44:chatcomm
+Responded:server ok
+Closed Socket: 192.168.0.119:Sock-44
+Closed Socket: 192.168.0.119:Sock-42
+
+Connection accepted: Sock-5
+From:192.168.0.119
+RECV:Sock-5:trycorder:Galaxy Nexus
+Responded:You are connected
+Send:192.168.0.119:test
+
+Send:192.168.0.119:test again
+

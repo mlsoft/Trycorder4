@@ -6,37 +6,75 @@
 #include <fcntl.h>
 #include <string.h>    //strlen
 #include <stdlib.h>    //strlen
-#include <sys/socket.h>
+#include <sys/socket.h>  // sockets
+#include <sys/un.h>	// unix sockets
 #include <arpa/inet.h> //inet_addr
 #include <unistd.h>    //write
 #include <pthread.h> //for threading , link with lpthread
  
-// the thread function to handle listener loop
+// ========= for the server of the tryclients ==========
+// the thread function to handle input listener loop
+void *input_handler(void *);
+
+// the thread function to handle a received connection
+void *coninput_handler(void *);
+
+// ========= for the server of the trycorders ==========
+// the thread function to handle trycorder listener loop
 void *listener_handler(void *);
 
 // the thread function to handle a received connection
 void *connection_handler(void *);
 
+// === functions to interact with list of connected trycorders ===
 void sendall(char *);
 void listconnclient();
 
 // the log-file pointer
-static FILE *fplog;
- 
-static char inputline[256]="";
+static FILE *fplog=NULL;
+
+// the local unix socket to talk with the user
+static int fdsock=0;
+
+// function to talk to the tryclient user and log it all
+void say(const char *s) {
+  int res;
+  printf("%s",s);
+  if(fplog!=NULL) fprintf(fplog,"%s",s);
+  if(fdsock!=0) res=write(fdsock,s,strlen(s));
+  fflush(stdout);
+  fflush(fplog);
+}
+
+// ====================== MAIN ==============================
 
 int main(int argc , char *argv[])
 {
+    // the inputline
+    char inputline[256]="";
 
-    fplog=fopen("tryserver.log","a");
+    // the log file for all tryserver actions
+    fplog=fopen("/var/log/tryserver.log","a");
     
+    // the thread that will handle connections from tryclient
+    pthread_t input_thread;
+    
+    if( pthread_create( &input_thread , NULL ,  input_handler , (void *)"Tryclient" ) < 0) {
+            say("could not create input thread\n");
+            return (1);
+    }
+
     // the thread that will handle connections from trycorders
     pthread_t listener_thread;
     
     if( pthread_create( &listener_thread , NULL ,  listener_handler , (void *)"Tryserver" ) < 0) {
-            perror("could not create listener thread\n");
+            say("could not create listener thread\n");
             return (1);
     }
+    
+    //Now join the thread , so that we dont terminate before the thread
+    //pthread_join( listener_thread , NULL);
+    //say("Handler assigned\n");
 
     // the main thread loop to input commands from command-line 
     // and ask to send it to all connected sockets
@@ -52,10 +90,13 @@ int main(int argc , char *argv[])
       }
     }
     
+    
     fclose(fplog);
  
     return(0);
 }
+
+// ===================================== connection list management =====================================
 
 // data block passed to the connection thread
 // with all data to handle a client connection
@@ -64,6 +105,7 @@ struct ConnClient {
   int clientlen;
   int client_sock;
   char ipaddr[64];
+  char tryname[64];
 };
 
 static struct ConnClient *connclient[256];
@@ -92,8 +134,10 @@ void delconnclient(struct ConnClient *conn) {
 
 void listconnclient() {
   int i;
+  char buf[256];
   for (i=0;i<nbconnclient;++i) {
-    printf("Client:%s:Sock:%d\n",connclient[i]->ipaddr,connclient[i]->client_sock);
+    sprintf(buf,"Client:%s:%s:Sock:%d\n",connclient[i]->ipaddr,connclient[i]->tryname,connclient[i]->client_sock);
+    say(buf);
   }
 }
 
@@ -102,17 +146,110 @@ void listconnclient() {
 void sendall(char *line) {
   if(nbconnclient<=0) return;
   int i;
+  char buf[256];
   for (i=0;i<nbconnclient;++i) {
     int sock=connclient[i]->client_sock;
     int res=write(sock , line , strlen(line));
-    printf("Send:%s:%s\n",connclient[i]->ipaddr,line);
-    fprintf(fplog,"Send:%s:%s\n",connclient[i]->ipaddr,line);
+    sprintf(buf,"Send:%s:%s\n",connclient[i]->ipaddr,line);
+    say(buf);
   }
-  fflush(stdout);
-  fflush(fplog);
   return;
 }
 
+
+// ===================================== TRYCLIENT server part =====================================
+
+
+/*
+ * This will wait for connection from each tryclient
+ * */
+
+void* input_handler(void* threadname)
+{
+
+    int socket_desc ;
+    struct sockaddr_un server ;
+    char buf[256];
+    
+    //Create socket
+    socket_desc = socket(AF_UNIX , SOCK_STREAM , 0);
+    if (socket_desc == -1)
+    {
+        say("Could not create socket\n");
+        exit(1);
+    }
+    sprintf(buf,"Input Socket created: %d\n",socket_desc);
+    say(buf);
+     
+    //Prepare the sockaddr_in structure
+    server.sun_family = AF_UNIX;
+    strcpy(server.sun_path,"tryserver.sock");
+    unlink(server.sun_path);
+    
+    //Bind
+    if( bind(socket_desc,(struct sockaddr *)&server , sizeof(server)) < 0)
+    {
+        //print the error message
+        say("bind failed. Error\n");
+        exit(1);
+    }
+    //puts("bind done\n");
+     
+    //Listen
+    listen(socket_desc , 3);
+     
+    //Accept and incoming connection
+    say("Waiting for incoming connections...\n");
+    
+    // loop to accept incoming client connections
+    
+    struct ConnClient *conn;
+    
+    while(1) {
+	fdsock=0;	// make sure socket 
+	conn=(struct ConnClient *) malloc(sizeof(struct ConnClient));
+	conn->clientlen=sizeof(struct sockaddr_un);
+	
+	conn->client_sock = accept(socket_desc, (struct sockaddr *)&(conn->client), (socklen_t*)&(conn->clientlen));
+	if(conn->client_sock<=0) break;
+	
+        sprintf(buf,"\nInput accepted: Sock-%d\n",conn->client_sock);
+	say(buf);
+         
+	fdsock=conn->client_sock;
+	
+	int read_size;
+	char client_message[2000];
+	
+	// Receive a message from client, 
+	// and continue to wait for more until the client close the connection
+	while( (read_size = recv(fdsock , client_message , 2000 , 0)) > 0 )
+	{
+	    int res;
+	    client_message[read_size]=0;
+	    if(strncmp(client_message,"list",4) ==0) {
+	      listconnclient();
+	    } else {
+	      // send this command to all trycorders
+	      sendall(client_message);
+	    }
+	    
+	}
+	close(fdsock);
+	free(conn);
+	fdsock=0;
+	
+    }
+    
+    fdsock=0;
+    
+    close(socket_desc);
+    
+    return (NULL);
+}
+
+
+// ===================================== TRYCORDER server part =====================================
 
 /*
  * This will wait for connection from each client
@@ -123,15 +260,17 @@ void* listener_handler(void* threadname)
 
     int socket_desc ;
     struct sockaddr_in server ;
-     
+    char buf[256];
+    
     //Create socket
     socket_desc = socket(AF_INET , SOCK_STREAM , 0);
     if (socket_desc == -1)
     {
-        printf("Could not create socket\n");
+        say("Could not create socket\n");
         exit(1);
     }
-    printf("Listener Socket created: %d\n",socket_desc);
+    sprintf(buf,"Listener Socket created: %d\n",socket_desc);
+    say(buf);
      
     //Prepare the sockaddr_in structure
     server.sin_family = AF_INET;
@@ -142,7 +281,7 @@ void* listener_handler(void* threadname)
     if( bind(socket_desc,(struct sockaddr *)&server , sizeof(server)) < 0)
     {
         //print the error message
-        perror("bind failed. Error\n");
+        say("bind failed. Error\n");
         exit(1);
     }
     //puts("bind done\n");
@@ -151,7 +290,7 @@ void* listener_handler(void* threadname)
     listen(socket_desc , 3);
      
     //Accept and incoming connection
-    puts("Waiting for incoming connections...\n");
+    say("Waiting for incoming connections...\n");
     
     // loop to accept incoming client connections
     
@@ -164,9 +303,10 @@ void* listener_handler(void* threadname)
 	conn->client_sock = accept(socket_desc, (struct sockaddr *)&(conn->client), (socklen_t*)&(conn->clientlen));
 	if(conn->client_sock<=0) break;
 	
-        printf("\nConnection accepted: Sock-%d\n",conn->client_sock);
-        fprintf(fplog,"\nConnection accepted: Sock-%d\n",conn->client_sock);
-        sprintf(conn->ipaddr,"%d.%d.%d.%d",
+        sprintf(buf,"\nConnection accepted: Sock-%d\n",conn->client_sock);
+	say(buf);
+	// extract the ip-addr from the connection
+	sprintf(conn->ipaddr,"%d.%d.%d.%d",
             (int)(conn->client.sin_addr.s_addr&0xFF),
             (int)((conn->client.sin_addr.s_addr&0xFF00)>>8),
             (int)((conn->client.sin_addr.s_addr&0xFF0000)>>16),
@@ -176,24 +316,21 @@ void* listener_handler(void* threadname)
          
         if( pthread_create( &connection_thread , NULL ,  connection_handler , (void*) conn) < 0)
         {
-            perror("could not create thread\n");
+            say("could not create thread\n");
             return (NULL);
         }
          
-        //Now join the thread , so that we dont terminate before the thread
-        //pthread_join( sniffer_thread , NULL);
-        //puts("Handler assigned\n");
     }
      
     if (conn->client_sock < 0)
     {
-        perror("accept failed\n");
+        say("accept failed\n");
         return (NULL);
     }
      
     return (NULL);
 }
- 
+
 /*
  * This will handle connection for each client
  * */
@@ -207,42 +344,42 @@ void *connection_handler(void *connvoid)
     char runcommand[1024];
     char server_response[]="server ok\n";
     char server_response2[]="You are connected\n";
-
+    char buf[256];
+    
     // log connection from
-    printf("From:%s\n",conn->ipaddr);
-    fprintf(fplog,"From:%s\n",conn->ipaddr);
-    fflush(stdout);
-    fflush(fplog);
-     
+    sprintf(buf,"From:%s\n",conn->ipaddr);
+    say(buf);
+    
     // Receive a message from client, 
     // and continue to wait for more until the client close the connection
     while( (read_size = recv(sock , client_message , 2000 , 0)) > 0 )
     {
+	int res;
+
+	client_message[read_size]=0;
 	// remove the last '\n' from the message
 	if(client_message[read_size-1]=='\n') client_message[read_size-1]=0;
 
-	// display and speak the received message
-        printf("RECV:Sock-%d:%s\n",sock,client_message);
-        fprintf(fplog,"RECV:Sock-%d:%s\n",sock,client_message);
-	fflush(fplog);
-	sprintf(runcommand,"espeak \"%s\"",client_message);
-	int res;
-	res=system(runcommand);
-
+	// display the received message
+        sprintf(buf,"RECV:Sock-%d:%s\n",sock,client_message);
+	say(buf);
+	
 	//Send the response back to client
 	if(strncmp(client_message,"trycorder:",10)==0) {
         	// this is a permanent link with the client
 		res=write(sock , "READY\n" , 6);
         	res=write(sock , server_response2 , strlen(server_response2));
-        	printf("Responded:%s",server_response2);
-        	fprintf(fplog,"Responded:%s",server_response2);
+        	sprintf(buf,"Responded:%s",server_response2);
+        	say(buf);
+		// save the client name
+		strcpy(conn->tryname,client_message+10);
 		// add this thread/connection to the list of permanent threads
 		addconnclient(conn);
 	} else {
 		// this is a temporary, one-shot message from the client
                 res=write(sock , server_response , strlen(server_response));
-        	printf("Responded:%s",server_response);
-        	fprintf(fplog,"Responded:%s",server_response);
+        	sprintf(buf,"Responded:%s",server_response);
+        	say(buf);
 		// send command back to all clients except the sender
 		if(nbconnclient>0) {
 		  int i;
@@ -251,14 +388,18 @@ void *connection_handler(void *connvoid)
 		    strcat(client_message,"\n");
 		    int sockm=connclient[i]->client_sock;
 		    int res=write(sockm , client_message , strlen(client_message));
-		    printf("Mirror:%s:%s",connclient[i]->ipaddr,client_message);
-		    fprintf(fplog,"Mirror:%s:%s",connclient[i]->ipaddr,client_message);
+		    sprintf(buf,"Mirror:%s:%s",connclient[i]->ipaddr,client_message);
+		    say(buf);
 		  }
 		}
         }
-        fflush(stdout);
-        fflush(fplog);
 	
+	// remove the last '\n' from the message
+	if(client_message[read_size-1]=='\n') client_message[read_size-1]=0;
+	// speak the message
+	sprintf(runcommand,"espeak \"%s\" &",client_message);
+	res=system(runcommand);
+
 	
     }
      
@@ -268,20 +409,19 @@ void *connection_handler(void *connvoid)
     }
     else if(read_size == -1)
     {
-        perror("recv failed\n");
+        say("recv failed\n");
     }
     
     // delete our structure from the list,
     // and free the structure 
     delconnclient(conn);
-    free(conn);
     
     //Free the socket pointer
-    printf("Closed Socket: %s:Sock-%d\n",conn->ipaddr,sock);
-    fprintf(fplog,"Closed Socket: %s:Sock-%d\n",conn->ipaddr,sock);
-    fflush(stdout);
-    fflush(fplog);
-     
+    sprintf(buf,"Closed Socket: %s:Sock-%d\n",conn->ipaddr,sock);
+    say(buf);
+
+    free(conn);
+
     return 0;
 }
 

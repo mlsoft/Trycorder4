@@ -86,7 +86,7 @@ tryserver_OBJECTS = \
 "CMakeFiles/tryserver.dir/main.cpp.o"
 
 # External object files for target tryserver
-tryserver_EXTERNAL_OBJECTS = -pthread
+tryserver_EXTERNAL_OBJECTS =
 
 tryserver: CMakeFiles/tryserver.dir/main.cpp.o
 tryserver: CMakeFiles/tryserver.dir/build.make
