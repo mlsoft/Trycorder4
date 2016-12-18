@@ -7,27 +7,25 @@
 #IncludeRegexTransform: 
 
 /home/mlsoft/AndroidStudioProjects/Trycorder4/tryserver/main.cpp
-tryclient.c
-/home/mlsoft/AndroidStudioProjects/Trycorder4/tryserver/tryclient.c
+tryserver.c
+/home/mlsoft/AndroidStudioProjects/Trycorder4/tryserver/tryserver.c
 
-/home/mlsoft/AndroidStudioProjects/Trycorder4/tryserver/tryclient.c
+/home/mlsoft/AndroidStudioProjects/Trycorder4/tryserver/tryserver.c
 stdio.h
 -
 fcntl.h
 -
-stdlib.h
--
-errno.h
--
 string.h
 -
-unistd.h
--
-sys/types.h
+stdlib.h
 -
 sys/socket.h
 -
 sys/un.h
+-
+arpa/inet.h
+-
+unistd.h
 -
 pthread.h
 -

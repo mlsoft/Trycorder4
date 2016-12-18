@@ -113,8 +113,8 @@ install/strip/fast: install/strip
 
 # Special rule for the target edit_cache
 edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
-	/usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
+	/usr/bin/cmake-gui -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -167,32 +167,32 @@ tryserver/fast:
 	$(MAKE) -f CMakeFiles/tryserver.dir/build.make CMakeFiles/tryserver.dir/build
 .PHONY : tryserver/fast
 
-main.o: main.cpp.o
+tryserver.o: tryserver.c.o
 
-.PHONY : main.o
+.PHONY : tryserver.o
 
 # target to build an object file
-main.cpp.o:
-	$(MAKE) -f CMakeFiles/tryserver.dir/build.make CMakeFiles/tryserver.dir/main.cpp.o
-.PHONY : main.cpp.o
+tryserver.c.o:
+	$(MAKE) -f CMakeFiles/tryserver.dir/build.make CMakeFiles/tryserver.dir/tryserver.c.o
+.PHONY : tryserver.c.o
 
-main.i: main.cpp.i
+tryserver.i: tryserver.c.i
 
-.PHONY : main.i
+.PHONY : tryserver.i
 
 # target to preprocess a source file
-main.cpp.i:
-	$(MAKE) -f CMakeFiles/tryserver.dir/build.make CMakeFiles/tryserver.dir/main.cpp.i
-.PHONY : main.cpp.i
+tryserver.c.i:
+	$(MAKE) -f CMakeFiles/tryserver.dir/build.make CMakeFiles/tryserver.dir/tryserver.c.i
+.PHONY : tryserver.c.i
 
-main.s: main.cpp.s
+tryserver.s: tryserver.c.s
 
-.PHONY : main.s
+.PHONY : tryserver.s
 
 # target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) -f CMakeFiles/tryserver.dir/build.make CMakeFiles/tryserver.dir/main.cpp.s
-.PHONY : main.cpp.s
+tryserver.c.s:
+	$(MAKE) -f CMakeFiles/tryserver.dir/build.make CMakeFiles/tryserver.dir/tryserver.c.s
+.PHONY : tryserver.c.s
 
 # Help Target
 help:
@@ -207,9 +207,9 @@ help:
 	@echo "... install/local"
 	@echo "... install/strip"
 	@echo "... edit_cache"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
+	@echo "... tryserver.o"
+	@echo "... tryserver.i"
+	@echo "... tryserver.s"
 .PHONY : help
 
 

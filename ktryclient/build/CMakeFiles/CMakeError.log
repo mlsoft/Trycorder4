@@ -1,0 +1,40 @@
+Performing C++ SOURCE FILE Test _OFFT_IS_64BIT failed with the following output:
+Change Dir: /home/mlsoft/AndroidStudioProjects/Trycorder4/ktryclient/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_7b598/fast"
+/usr/bin/make -f CMakeFiles/cmTC_7b598.dir/build.make CMakeFiles/cmTC_7b598.dir/build
+make[1]: Entering directory '/home/mlsoft/AndroidStudioProjects/Trycorder4/ktryclient/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_7b598.dir/src.cxx.o
+/usr/bin/c++   -D_GNU_SOURCE -D_LARGEFILE64_SOURCE  -D_OFFT_IS_64BIT   -o CMakeFiles/cmTC_7b598.dir/src.cxx.o -c /home/mlsoft/AndroidStudioProjects/Trycorder4/ktryclient/build/CMakeFiles/CMakeTmp/src.cxx
+/home/mlsoft/AndroidStudioProjects/Trycorder4/ktryclient/build/CMakeFiles/CMakeTmp/src.cxx:7:36: warning: left shift count >= width of type [-Wshift-count-overflow]
+ #define LARGE_OFF_T (((off_t) 1 << 62) - 1 + ((off_t) 1 << 62))
+                                    ^
+/home/mlsoft/AndroidStudioProjects/Trycorder4/ktryclient/build/CMakeFiles/CMakeTmp/src.cxx:8:23: note: in expansion of macro ‘LARGE_OFF_T’
+   int off_t_is_large[(LARGE_OFF_T % 2147483629 == 721 && LARGE_OFF_T % 2147483647 == 1) ? 1 : -1];
+                       ^~~~~~~~~~~
+/home/mlsoft/AndroidStudioProjects/Trycorder4/ktryclient/build/CMakeFiles/CMakeTmp/src.cxx:7:60: warning: left shift count >= width of type [-Wshift-count-overflow]
+ #define LARGE_OFF_T (((off_t) 1 << 62) - 1 + ((off_t) 1 << 62))
+                                                            ^
+/home/mlsoft/AndroidStudioProjects/Trycorder4/ktryclient/build/CMakeFiles/CMakeTmp/src.cxx:8:23: note: in expansion of macro ‘LARGE_OFF_T’
+   int off_t_is_large[(LARGE_OFF_T % 2147483629 == 721 && LARGE_OFF_T % 2147483647 == 1) ? 1 : -1];
+                       ^~~~~~~~~~~
+/home/mlsoft/AndroidStudioProjects/Trycorder4/ktryclient/build/CMakeFiles/CMakeTmp/src.cxx:8:97: error: size of array ‘off_t_is_large’ is negative
+   int off_t_is_large[(LARGE_OFF_T % 2147483629 == 721 && LARGE_OFF_T % 2147483647 == 1) ? 1 : -1];
+                                                                                                 ^
+CMakeFiles/cmTC_7b598.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_7b598.dir/src.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTC_7b598.dir/src.cxx.o] Error 1
+make[1]: Leaving directory '/home/mlsoft/AndroidStudioProjects/Trycorder4/ktryclient/build/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_7b598/fast' failed
+make: *** [cmTC_7b598/fast] Error 2
+
+Source file was:
+
+#include <sys/types.h>
+ /* Check that off_t can represent 2**63 - 1 correctly.
+    We can't simply define LARGE_OFF_T to be 9223372036854775807,
+    since some C++ compilers masquerading as C compilers
+    incorrectly reject 9223372036854775807.  */
+#define LARGE_OFF_T (((off_t) 1 << 62) - 1 + ((off_t) 1 << 62))
+  int off_t_is_large[(LARGE_OFF_T % 2147483629 == 721 && LARGE_OFF_T % 2147483647 == 1) ? 1 : -1];
+  int main() { return 0; }
+

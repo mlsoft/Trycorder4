@@ -1,0 +1,2 @@
+/usr/local/bin/ktryclient
+/usr/local/share/kxmlgui5/ktryclient/ktryclientui.rc

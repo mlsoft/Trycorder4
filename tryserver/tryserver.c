@@ -12,6 +12,8 @@
 #include <unistd.h>    //write
 #include <pthread.h> //for threading , link with lpthread
  
+#define SOCK_PATH "/var/run/tryserver.sock"
+
 // ========= for the server of the tryclients ==========
 // the thread function to handle input listener loop
 void *input_handler(void *);
@@ -29,6 +31,7 @@ void *connection_handler(void *);
 // === functions to interact with list of connected trycorders ===
 void sendall(char *);
 void listconnclient();
+void publishlist();
 
 // the log-file pointer
 static FILE *fplog=NULL;
@@ -115,10 +118,12 @@ void addconnclient(struct ConnClient *conn) {
   if(nbconnclient>255) return;
   connclient[nbconnclient]=conn;
   nbconnclient++;
+  // tell all trycorders the list changed
+  publishlist();
 }
 
 void delconnclient(struct ConnClient *conn) {
-  if(nbconnclient==0) return;
+  if(nbconnclient<=0) return;
   int i;
   for(i=0;i<nbconnclient;++i) {
     if(conn==connclient[i]) {
@@ -127,12 +132,15 @@ void delconnclient(struct ConnClient *conn) {
 	connclient[j]=connclient[j+1];
       }
       nbconnclient--;
+      // tell all trycorders the list changed
+      publishlist();
       break;
     }
   }
 }
 
 void listconnclient() {
+  if(nbconnclient<=0) return;
   int i;
   char buf[256];
   for (i=0;i<nbconnclient;++i) {
@@ -156,6 +164,20 @@ void sendall(char *line) {
   return;
 }
 
+// publish the list of trycorders connected to all clients
+void publishlist() {
+  if(nbconnclient<=0) return;
+  char buf[2048];
+  char mach[64];
+  int i;
+  strcpy(buf,"trycorders:");
+  for(i=0;i<nbconnclient;++i) {
+    sprintf(mach,"%s,%s:",connclient[i]->ipaddr,connclient[i]->tryname);
+    strcat(buf,mach);
+  }
+  //strcat(buf,"\n");
+  sendall(buf);
+}
 
 // ===================================== TRYCLIENT server part =====================================
 
@@ -183,7 +205,7 @@ void* input_handler(void* threadname)
      
     //Prepare the sockaddr_in structure
     server.sun_family = AF_UNIX;
-    strcpy(server.sun_path,"tryserver.sock");
+    strcpy(server.sun_path,SOCK_PATH);
     unlink(server.sun_path);
     
     //Bind

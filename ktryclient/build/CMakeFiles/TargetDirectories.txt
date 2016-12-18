@@ -1,0 +1,10 @@
+/home/mlsoft/AndroidStudioProjects/Trycorder4/ktryclient/build/CMakeFiles/rebuild_cache.dir
+/home/mlsoft/AndroidStudioProjects/Trycorder4/ktryclient/build/CMakeFiles/edit_cache.dir
+/home/mlsoft/AndroidStudioProjects/Trycorder4/ktryclient/build/CMakeFiles/install/strip.dir
+/home/mlsoft/AndroidStudioProjects/Trycorder4/ktryclient/build/CMakeFiles/test.dir
+/home/mlsoft/AndroidStudioProjects/Trycorder4/ktryclient/build/CMakeFiles/list_install_components.dir
+/home/mlsoft/AndroidStudioProjects/Trycorder4/ktryclient/build/CMakeFiles/uninstall.dir
+/home/mlsoft/AndroidStudioProjects/Trycorder4/ktryclient/build/CMakeFiles/ktryclient.dir
+/home/mlsoft/AndroidStudioProjects/Trycorder4/ktryclient/build/CMakeFiles/install/local.dir
+/home/mlsoft/AndroidStudioProjects/Trycorder4/ktryclient/build/CMakeFiles/install.dir
+/home/mlsoft/AndroidStudioProjects/Trycorder4/ktryclient/build/CMakeFiles/ktryclient_automoc.dir

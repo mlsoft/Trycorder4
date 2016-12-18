@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/mlsoft/AndroidStudioProjects/Trycorder4/tryclient/tryclient.c
+stdio.h
+-
+fcntl.h
+-
+stdlib.h
+-
+errno.h
+-
+string.h
+-
+unistd.h
+-
+sys/types.h
+-
+sys/socket.h
+-
+sys/un.h
+-
+pthread.h
+-
+

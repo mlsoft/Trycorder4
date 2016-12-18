@@ -1,0 +1,1 @@
+/usr/bin/cc  -O3 -DNDEBUG   CMakeFiles/tryclient.dir/tryclient.c.o  -o tryclient -rdynamic -lpthread 

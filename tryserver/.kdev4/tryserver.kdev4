@@ -19,5 +19,20 @@ Name=GCC
 Path=gcc
 Type=GCC
 
+[Launch]
+Launch Configurations=Launch Configuration 0
+
+[Launch][Launch Configuration 0]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=tryserver
+Type=Native Application
+
+[Launch][Launch Configuration 0][Data]
+Configured from ProjectItem=tryserver,tryserver
+Project Target=tryserver,tryserver
+Working Directory=file:///home/mlsoft/AndroidStudioProjects/Trycorder4/tryserver/build/
+isExecutable=false
+
 [Project]
 VersionControlSupport=kdevgit

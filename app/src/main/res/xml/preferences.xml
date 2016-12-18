@@ -46,6 +46,16 @@
             android:title="Is Master"
             android:defaultValue="true" />
         <CheckBoxPreference
+            android:key="pref_key_send_local"
+            android:summary="Determine if we send to Local Net"
+            android:title="Send Local"
+            android:defaultValue="true" />
+        <CheckBoxPreference
+            android:key="pref_key_send_remote"
+            android:summary="Determine if we send to Remote Net"
+            android:title="Send Remote"
+            android:defaultValue="true" />
+        <CheckBoxPreference
             android:key="pref_key_replay_sent"
             android:summary="Determine if we replay the sent text locally"
             android:title="Replay Sent"
@@ -65,6 +75,11 @@
             android:summary="Enable to debug locally"
             android:title="Debug Mode"
             android:defaultValue="false" />
+        <EditTextPreference
+            android:key="pref_key_debug_addr"
+            android:summary="Debug server address"
+            android:title="Debug Server Address"
+            android:defaultValue="192.168.0.184"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

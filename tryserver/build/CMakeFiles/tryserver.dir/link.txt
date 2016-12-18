@@ -1,1 +1,1 @@
-/usr/bin/c++   -O3 -DNDEBUG   CMakeFiles/tryserver.dir/main.cpp.o  -o tryserver -rdynamic -lpthread 
+/usr/bin/cc  -O3 -DNDEBUG   CMakeFiles/tryserver.dir/tryserver.c.o  -o tryserver -rdynamic -lpthread 

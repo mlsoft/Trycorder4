@@ -1,1 +1,0 @@
-/usr/bin/c++   -pthread  -lpthread CMakeFiles/tryserver.dir/main.cpp.o  -o tryserver -rdynamic -lpthread 

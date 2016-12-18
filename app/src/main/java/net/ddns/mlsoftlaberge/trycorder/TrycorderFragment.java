@@ -382,10 +382,13 @@ public class TrycorderFragment extends Fragment
     private String displayLanguage;
     private String deviceName;
     private boolean isMaster;
+    private boolean sendLocal;
+    private boolean sendRemote;
     private boolean replaySent;
     private boolean autoBoot;
     private boolean autoStop;
     private boolean debugMode;
+    private String debugAddr;
 
     // the preferences holder
     private SharedPreferences sharedPref;
@@ -406,10 +409,13 @@ public class TrycorderFragment extends Fragment
         displayLanguage = sharedPref.getString("pref_key_display_language", "");
         deviceName = sharedPref.getString("pref_key_device_name", "");
         isMaster = sharedPref.getBoolean("pref_key_ismaster", true);
+        sendLocal = sharedPref.getBoolean("pref_key_send_local", true);
+        sendRemote = sharedPref.getBoolean("pref_key_send_remote", true);
         replaySent = sharedPref.getBoolean("pref_key_replay_sent", false);
         autoBoot = sharedPref.getBoolean("pref_key_auto_boot", true);
         autoStop = sharedPref.getBoolean("pref_key_auto_stop", false);
         debugMode = sharedPref.getBoolean("pref_key_debug_mode", false);
+        debugAddr = sharedPref.getString("pref_key_debug_addr", "192.168.0.184");
 
         // ==============================================================================
         // create layout params for the created views
@@ -1725,10 +1731,14 @@ public class TrycorderFragment extends Fragment
         displayLanguage = sharedPref.getString("pref_key_display_language", "");
         deviceName = sharedPref.getString("pref_key_device_name", "Trycorder");
         isMaster = sharedPref.getBoolean("pref_key_ismaster", true);
+        sendLocal = sharedPref.getBoolean("pref_key_send_local", true);
+        sendRemote = sharedPref.getBoolean("pref_key_send_remote", true);
         replaySent = sharedPref.getBoolean("pref_key_replay_sent", false);
         autoBoot = sharedPref.getBoolean("pref_key_auto_boot", true);
         autoStop = sharedPref.getBoolean("pref_key_auto_stop", false);
         debugMode = sharedPref.getBoolean("pref_key_debug_mode", false);
+        debugAddr = sharedPref.getString("pref_key_debug_addr", "192.168.0.184");
+
         // update device name for a device name from system
         if(deviceName.equals("Trycorder")) {
             deviceName=mFetcher.fetch_device_name();
@@ -1736,6 +1746,7 @@ public class TrycorderFragment extends Fragment
             editor.putString("pref_key_device_name", deviceName);
             editor.commit();
         }
+
         // dynamic status part
         mSensormode = sharedPref.getInt("pref_key_sensor_mode", 0);
         mSensorpage = sharedPref.getInt("pref_key_sensor_page", 0);
@@ -2997,16 +3008,16 @@ public class TrycorderFragment extends Fragment
             speak("english", speakLanguage);
             return (true);
         }
-        if (texte.contains("martin") || texte.contains("master")) {
-            if (speakLanguage.equals("FR")) speak("Martin est mon maître.");
-            else speak("Martin is my Master.");
-            return (true);
-        }
-        if (texte.contains("computer") || texte.contains("ordinateur")) {
-            if (speakLanguage.equals("FR")) speak("Faites votre requète");
-            else speak("State your question");
-            return (true);
-        }
+        //if (texte.contains("martin") || texte.contains("master")) {
+        //    if (speakLanguage.equals("FR")) speak("Martin est mon maître.");
+        //    else speak("Martin is my Master.");
+        //    return (true);
+        //}
+        //if (texte.contains("computer") || texte.contains("ordinateur")) {
+        //    if (speakLanguage.equals("FR")) speak("Faites votre requète");
+        //    else speak("State your question");
+        //    return (true);
+        //}
         if (texte.contains("fuck") || texte.contains("shit")) {
             if (speakLanguage.equals("FR")) speak("Ne m'adressez pas la parole de cette façon");
             else playsound(R.raw.donotaddressthisunitinthatmanner_clean);
@@ -3016,11 +3027,11 @@ public class TrycorderFragment extends Fragment
             return (true);
         }
         // actions on the trycorder
-        if (texte.contains("alert")) {
-            switchbuttonlayout(4);
-            redalert();
-            return (true);
-        }
+        //if (texte.contains("alert")) {
+        //    switchbuttonlayout(4);
+        //    redalert();
+        //    return (true);
+        //}
         if (texte.contains("sensor off")) {
             switchbuttonlayout(1);
             sensorsoff();

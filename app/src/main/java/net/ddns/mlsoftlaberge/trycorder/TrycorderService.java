@@ -95,9 +95,13 @@ public class TrycorderService extends Service implements RecognitionListener {
     private boolean autoListen;
     private String speakLanguage;
     private String listenLanguage;
+    private boolean isMaster;
+    private boolean sendLocal;
+    private boolean sendRemote;
     private boolean autoBoot;
     private boolean autoStop;
     private boolean debugMode;
+    private String debugAddr;
 
     @Override
     public void onCreate() {
@@ -116,9 +120,14 @@ public class TrycorderService extends Service implements RecognitionListener {
         speakLanguage = sharedPref.getString("pref_key_speak_language", "");
         listenLanguage = sharedPref.getString("pref_key_listen_language", "");
         deviceName = sharedPref.getString("pref_key_device_name", "Trycorder");
+        isMaster = sharedPref.getBoolean("pref_key_ismaster", true);
+        sendLocal = sharedPref.getBoolean("pref_key_send_local", true);
+        sendRemote = sharedPref.getBoolean("pref_key_send_remote", true);
         autoBoot = sharedPref.getBoolean("pref_key_auto_boot", true);
         autoStop = sharedPref.getBoolean("pref_key_auto_stop", false);
         debugMode = sharedPref.getBoolean("pref_key_debug_mode", false);
+        debugAddr = sharedPref.getString("pref_key_debug_addr", "192.168.0.184");
+
         if(deviceName.equals("Trycorder")) {
             deviceName=mFetcher.fetch_device_name();
             SharedPreferences.Editor editor = sharedPref.edit();
@@ -328,12 +337,12 @@ public class TrycorderService extends Service implements RecognitionListener {
     private boolean matchvoice(String textein) {
         String texte = textein.toLowerCase();
         if (texte.contains("server ok")) return(true);
-        if (texte.contains("red alert")) return(true);
-        if (texte.contains("yellow alert")) return(true);
+        //if (texte.contains("red alert")) return(true);
+        //if (texte.contains("yellow alert")) return(true);
         if (texte.contains("french") || texte.contains("français")) return(true);
         if (texte.contains("english") || texte.contains("anglais")) return(true);
-        if (texte.contains("martin") || texte.contains("master")) return(true);
-        if (texte.contains("computer") || texte.contains("ordinateur")) return(true);
+        //if (texte.contains("martin") || texte.contains("master")) return(true);
+        //if (texte.contains("computer") || texte.contains("ordinateur")) return(true);
         if (texte.contains("fuck") || texte.contains("shit")) return(true);
         if (texte.contains("sensor off")) return(true);
         if (texte.contains("sensor") || texte.contains("magnetic")) return(true);
@@ -401,17 +410,20 @@ public class TrycorderService extends Service implements RecognitionListener {
 
         @Override
         public void run() {
-            // send to all other trycorders
-            if(mIpList.size()>=2) {
-                for (int i = 1; i < mIpList.size(); ++i) {
-                    clientsend(mIpList.get(i));
+            if(sendLocal) {
+                // send to all other trycorders
+                if (mIpList.size() >= 2) {
+                    for (int i = 1; i < mIpList.size(); ++i) {
+                        clientsend(mIpList.get(i));
+                    }
                 }
             }
-            // send to the tryserver machine
-            if(debugMode) serversend("192.168.0.184");
-            else serversend("mlsoftlaberge.ddns.net");
+            if(sendRemote) {
+                // send to the tryserver machine
+                if (debugMode) serversend(debugAddr);
+                else serversend("mlsoftlaberge.ddns.net");
+            }
         }
-
 
         private void serversend(String destip) {
             // try to connect to a socket
@@ -536,7 +548,7 @@ public class TrycorderService extends Service implements RecognitionListener {
         @Override
         public void run() {
             // send to the tryserver machine
-            if(debugMode) starshipsend("192.168.0.184");
+            if(debugMode) starshipsend(debugAddr);
             else starshipsend("mlsoftlaberge.ddns.net");
         }
 
@@ -715,15 +727,23 @@ public class TrycorderService extends Service implements RecognitionListener {
     }
 
     public void displaytext(String msg) {
+        if(msg.contains("trycorders:")) {
+            playsound(R.raw.computerbeep_29);
+            return;
+        }
         if(msg.contains("server ok")) {
             playsound(R.raw.computerbeep_39);
             return;
         }
         if(msg.contains("red alert")) {
             playsound(R.raw.tng_red_alert1);
+            speak(msg);
+            return;
         }
         if(msg.contains("yellow alert")) {
             playsound(R.raw.alert15);
+            speak(msg);
+            return;
         }
         if(matchvoice(msg)==false) {
             speak(msg);
